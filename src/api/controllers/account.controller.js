@@ -1,6 +1,6 @@
-const httpStatus = require('http-status');
-const { omit } = require('lodash');
-const crypto = require('crypto');
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+const aws = require("aws-sdk");
 const axios = require('axios')
 const Account = require('../models/account.model');
 
@@ -13,6 +13,50 @@ function formatPhoneNumber(phoneNumberString) {
   }
   return null;
 }
+
+aws.config.update({
+  secretAccessKey: process.env.AWS_KEY,
+  accessKeyId: process.env.AWS_KEYID,
+  region: "us-east-1" // region of your bucket
+});
+
+const s3 = new aws.S3();
+
+const multerOptions = {
+  storage: multerS3({
+    s3,
+    bucket: "estimatorapp",
+    acl: "public-read",
+    metadata(req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key(req, file, cb) {
+      const name = `${req.user.sub}/` + "logo";
+      cb(null, name);
+    }
+  }),
+  fileFilter(req, file, next) {
+    const isPhoto = file.mimetype.startsWith("image/");
+    if (isPhoto) {
+      next(null, true);
+    } else {
+      next({ message: "That filetype isn't allowed!" }, false);
+    }
+  }
+};
+
+const singleUpload = multer(multerOptions).single("file");
+
+exports.upload = async (req, res, next) => {
+  await singleUpload(req, res, (err, some) => {
+    if (err) {
+      return res.status(422).send({
+        errors: [{ title: "Image Upload Error", detail: err.message }]
+      });
+    }
+    next();
+  });
+};
 
 exports.getAccount = async (req, res, next) => {
   try {
@@ -45,6 +89,10 @@ exports.editAccount = async (req, res, next) => {
 
   let name = req.body.name
   let phone = ""
+  let picture = req.body.picture
+  if (req.file) {
+    picture = req.file.location;
+  }
   if (req.body.phone !== "") {
     phone = formatPhoneNumber(req.body.phone);
   }
@@ -52,7 +100,7 @@ exports.editAccount = async (req, res, next) => {
   let hourly = req.body.hourly
   let available = req.body.available
   try {
-    const account = await Account.findOneAndUpdate({ user: req.user.sub }, {name, phone, description, hourly, available}, {
+    const account = await Account.findOneAndUpdate({ user: req.user.sub }, {name, phone, description, hourly, available, picture}, {
       new: true, // return the new store instead of the old one
       runValidators: true,
     }).exec();
