@@ -65,19 +65,19 @@ exports.getAccount = async (req, res, next) => {
     if (!account) {
       let name = ""
       let email = ""
-      let picture = ""
+      let avatar = ""
       axios.defaults.headers.common['Authorization'] = req.headers.authorization;
       await axios.get('https://dev-2upadx1s.auth0.com/userinfo')
         .then(function (response) {
           name = response.data.name
           email = response.data.email
-          picture = response.data.picture
+          avatar = response.data.avatar
         })
         .catch(function (error) {
           next(error)
         });
 
-      const account = await (new Account({ user: req.user.sub, name, email, picture })).save();
+      const account = await (new Account({ user: req.user.sub, name, email, avatar })).save();
       res.json({ account });
     } else {
       res.json({ account });
@@ -87,20 +87,16 @@ exports.getAccount = async (req, res, next) => {
 
 exports.editAccount = async (req, res, next) => {
 
-  let name = req.body.name
-  let phone = ""
-  let picture = req.body.picture
   if (req.file) {
-    picture = req.file.location;
+    console.log("done!!!!!")
+    req.body.avatar = req.file.location;
   }
-  if (req.body.phone !== "") {
-    phone = formatPhoneNumber(req.body.phone);
+  if (req.body.phone !== "" && req.body.phone !== null && req.body.phone !== undefined) {
+    req.body.phone = formatPhoneNumber(req.body.phone);
   }
-  let description = req.body.description
-  let hourly = req.body.hourly
-  let available = req.body.available
+  
   try {
-    const account = await Account.findOneAndUpdate({ user: req.user.sub }, {name, phone, description, hourly, available, picture}, {
+    const account = await Account.findOneAndUpdate({ user: req.user.sub }, req.body, {
       new: true, // return the new store instead of the old one
       runValidators: true,
     }).exec();

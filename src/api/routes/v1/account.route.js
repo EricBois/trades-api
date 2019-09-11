@@ -33,6 +33,6 @@ router
 
 router
   .route('/edit')
-  .post(checkJwt, controller.editAccount);
+  .post(checkJwt, controller.upload, controller.editAccount);
 
 module.exports = router;

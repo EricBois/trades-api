@@ -14,7 +14,10 @@ const accountSchema = new mongoose.Schema({
     default: 'user'
   },
   hourly: Number,
-  picture: String,
+  avatar: {
+    type: String,
+    trim: true
+  },
   slug: String,
   user: {
     type: String,
@@ -32,6 +35,7 @@ const accountSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
+    trim: true
   },
   description: {
     type: String,
@@ -54,7 +58,9 @@ const accountSchema = new mongoose.Schema({
       type: String,
     },
   },
-  available: Boolean,
+  available: { 
+    type: Boolean
+  },
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
