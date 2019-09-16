@@ -61,6 +61,16 @@ const accountSchema = new mongoose.Schema({
   available: { 
     type: Boolean
   },
+  skills: [{
+    text: {
+      type: String
+    }
+  }],
+  tickets: [{
+    text: {
+      type: String
+    }
+  }],
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
