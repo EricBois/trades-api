@@ -71,6 +71,13 @@ const accountSchema = new mongoose.Schema({
       type: String
     }
   }],
+  wcb: String,
+  liability: String,
+  quality: {
+    type: Number,
+    max: 10,
+    default: 5
+  }
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
