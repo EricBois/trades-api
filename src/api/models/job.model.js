@@ -16,6 +16,7 @@ const jobSchema = new mongoose.Schema({
   name: {
     type: String,
     trim: true,
+    required: 'Must have a name!'
   },
   jobType: {
     type: String,
