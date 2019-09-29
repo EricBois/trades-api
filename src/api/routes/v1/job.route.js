@@ -43,4 +43,8 @@ router
     .route('/get')
     .get(checkJwt, controller.get);
 
+router
+    .route('/view/:id')
+    .get(checkJwt, controller.getOne);
+
 module.exports = router;

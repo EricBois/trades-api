@@ -10,6 +10,26 @@ exports.create = async (req, res, next) => {
     }
 };
 
+exports.getOne = async (req, res, next) => {
+    try {
+        const job = await Job.findOne({ _id: req.params.id, private: false });
+        if (!job) return next();
+        res.json({
+            name: job.name, 
+            description: job.description, 
+            budget: job.budget, 
+            skills: job.skills, 
+            tickets: job.tickets,
+            jobType: job.jobType,
+            liability: job.liability,
+            wcb: job.wcb,
+            location: job.location
+        });
+    } catch (e) {
+      next(e)
+    }
+};
+
 exports.get = async (req, res, next) => {
     try {
         const jobsPromise = Job.find({ private: false }).sort({ Created: -1 });
