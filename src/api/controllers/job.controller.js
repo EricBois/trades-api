@@ -1,8 +1,11 @@
 const Job = require('../models/job.model');
+const Account = require('../models/account.model');
 
 exports.create = async (req, res, next) => {
     try {
         req.body.user = req.user.sub
+        const account = await Account.findOne({ user: req.user.sub });
+        req.body.createdBy = account.name
         const job = await (new Job(req.body)).save();
         res.json(job);
     } catch (e) {
@@ -23,7 +26,9 @@ exports.getOne = async (req, res, next) => {
             jobType: job.jobType,
             liability: job.liability,
             wcb: job.wcb,
-            location: job.location
+            location: job.location,
+            createdBy: job.createdBy,
+            created: job.Created
         });
     } catch (e) {
       next(e)

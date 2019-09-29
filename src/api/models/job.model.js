@@ -8,6 +8,7 @@ const jobSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  createdBy: String,
   slug: String,
   user: {
     type: String,
@@ -29,7 +30,7 @@ const jobSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    enum: ['Calgary'],
+    enum: ['Calgary', 'Edmonton'],
     required: 'Must have a location'
   },
   private: { 
