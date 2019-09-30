@@ -28,7 +28,7 @@ exports.getOne = async (req, res, next) => {
             wcb: job.wcb,
             location: job.location,
             createdBy: job.createdBy,
-            created: job.Created
+            Created: job.Created
         });
     } catch (e) {
       next(e)
