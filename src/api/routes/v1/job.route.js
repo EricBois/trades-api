@@ -44,7 +44,19 @@ router
     .get(checkJwt, controller.get);
 
 router
+    .route('/get/user')
+    .get(checkJwt, controller.getFromUser);
+
+router
     .route('/view/:id')
     .get(checkJwt, controller.getOne);
+
+router
+    .route('/edit/:id')
+    .post(checkJwt, controller.edit);
+
+router
+    .route('/delete/:id')
+    .post(checkJwt, controller.delete);
 
 module.exports = router;
