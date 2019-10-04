@@ -30,7 +30,8 @@ exports.getOne = async (req, res, next) => {
             createdBy: job.createdBy,
             Created: job.Created,
             user: job.user,
-            id: job._id
+            id: job._id,
+            oneBid: job.oneBid
         });
     } catch (e) {
       next(e)

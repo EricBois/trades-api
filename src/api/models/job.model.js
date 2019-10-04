@@ -54,7 +54,7 @@ const jobSchema = new mongoose.Schema({
     max: 10,
     default: 0
   },
-  onePrice: false
+  oneBid: false
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
