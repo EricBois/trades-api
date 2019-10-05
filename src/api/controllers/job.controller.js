@@ -31,7 +31,8 @@ exports.getOne = async (req, res, next) => {
             Created: job.Created,
             user: job.user,
             id: job._id,
-            oneBid: job.oneBid
+            oneBid: job.oneBid,
+            bids: job.bids
         });
     } catch (e) {
       next(e)

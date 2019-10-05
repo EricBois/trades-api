@@ -76,4 +76,19 @@ jobSchema.pre('save', async function (next) {
   next();
 });
 
+jobSchema.virtual('bids', {
+  ref: 'Bid', // what model to link?
+  localField: '_id', // which field on the job?
+  foreignField: 'project', // which field on the item?
+});
+
+function autopopulate(next) {
+  this.populate('bids');
+  next();
+}
+
+
+jobSchema.pre('find', autopopulate);
+jobSchema.pre('findOne', autopopulate);
+
 module.exports = mongoose.model('Job', jobSchema);
