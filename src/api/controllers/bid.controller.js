@@ -12,3 +12,13 @@ exports.create = async (req, res, next) => {
       next(e)
     }
 };
+
+exports.get = async (req, res, next) => {
+    try {
+        const bidsPromise = Bid.find({ project: req.params.id }).sort({ Created: -1 });
+        const [bids] = await Promise.all([bidsPromise]);
+        res.json(bids);
+    } catch (e) {
+      next(e)
+    }
+};

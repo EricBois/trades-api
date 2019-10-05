@@ -39,4 +39,8 @@ router
     .route('/create')
     .post(checkJwt, controller.create);
 
+router
+    .route('/get/:id')
+    .get(checkJwt, controller.get);
+
 module.exports = router;
