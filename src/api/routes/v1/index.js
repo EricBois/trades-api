@@ -1,6 +1,7 @@
 const express = require('express');
 const accountRoutes = require('./account.route');
 const jobRoutes = require('./job.route');
+const bidRoutes = require('./bid.route');
 
 const router = express.Router();
 
@@ -17,6 +18,8 @@ router.use('/docs', express.static('docs'));
 router.use('/account', accountRoutes);
 
 router.use('/job', jobRoutes);
+
+router.use('/bid', bidRoutes);
 
 
 module.exports = router;
