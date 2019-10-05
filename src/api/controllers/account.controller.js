@@ -25,7 +25,7 @@ const s3 = new aws.S3();
 const multerOptions = {
   storage: multerS3({
     s3,
-    bucket: "estimatorapp",
+    bucket: "subhub01",
     acl: "public-read",
     metadata(req, file, cb) {
       cb(null, { fieldName: file.fieldname });
