@@ -14,7 +14,8 @@ const bidSchema = new mongoose.Schema({
   },
   createdBy: String,
   trade: [{
-    type: String
+    type: String,
+    default: "Whole Project"
   }],
   user: {
     type: String,
