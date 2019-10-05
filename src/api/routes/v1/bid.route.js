@@ -43,4 +43,8 @@ router
     .route('/get/:id')
     .get(checkJwt, controller.get);
 
+router
+    .route('/delete')
+    .post(checkJwt, controller.delete);
+
 module.exports = router;

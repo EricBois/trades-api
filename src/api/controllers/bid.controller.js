@@ -22,3 +22,12 @@ exports.get = async (req, res, next) => {
       next(e)
     }
 };
+
+exports.delete = async (req, res, next) => {
+    try {
+        await Bid.deleteOne({ _id: req.body.id, user: req.user.sub });
+        res.json("Successfully deleted")
+    } catch (e) {
+        next(e)
+    }
+};
