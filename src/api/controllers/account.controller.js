@@ -88,7 +88,6 @@ exports.getAccount = async (req, res, next) => {
 exports.editAccount = async (req, res, next) => {
 
   if (req.file) {
-    console.log("done!!!!!")
     req.body.avatar = req.file.location;
   }
   if (req.body.phone !== "" && req.body.phone !== null && req.body.phone !== undefined) {
