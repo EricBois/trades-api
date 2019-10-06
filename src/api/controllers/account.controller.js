@@ -31,7 +31,9 @@ const multerOptions = {
       cb(null, { fieldName: file.fieldname });
     },
     key(req, file, cb) {
-      const name = `${req.user.sub}/` + "logo";
+      const ext = file.originalname.split('.').slice(1).join('.')
+      console.log(file)
+      const name = `${req.user.sub}/` + "logo."+ext;
       cb(null, name);
     }
   }),
