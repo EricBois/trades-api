@@ -63,7 +63,15 @@ exports.deleteFile = async (req, res) => {
     await s3.deleteObjects(params, (err, data) => {
       if (err) next(err, err.stack); // an error occurred
     });
-    res.json('done');
+    try {
+        const job = await Job.findOneAndUpdate({ _id: req.params.id, user: req.user.sub }, {file: ''}, {
+            new: true, // return the new store instead of the old one
+            runValidators: true,
+        }).exec();
+        res.json('Done')
+    } catch (e) {
+        next(e)
+    }
   };
   
 exports.create = async (req, res, next) => {
