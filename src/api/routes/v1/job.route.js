@@ -53,7 +53,7 @@ router
 
 router
     .route('/edit/:id')
-    .post(checkJwt, controller.edit);
+    .post(checkJwt, controller.upload, controller.edit);
 
 router
     .route('/delete/:id')

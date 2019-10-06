@@ -54,6 +54,10 @@ const jobSchema = new mongoose.Schema({
     max: 10,
     default: 0
   },
+  pdf: {
+    type: String,
+    trim: true
+  },
   oneBid: false
 }, {
   toJSON: { virtuals: true },

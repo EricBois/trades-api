@@ -1,6 +1,55 @@
 const Job = require('../models/job.model');
 const Account = require('../models/account.model');
 
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+const aws = require("aws-sdk");
+
+aws.config.update({
+    secretAccessKey: process.env.AWS_KEY,
+    accessKeyId: process.env.AWS_KEYID,
+    region: "us-east-1" // region of your bucket
+});
+
+const s3 = new aws.S3();
+
+const multerOptions = {
+    storage: multerS3({
+        s3,
+        bucket: "subhub01",
+        acl: "public-read",
+        metadata(req, file, cb) {
+            cb(null, { fieldName: file.fieldname });
+        },
+        key(req, file, cb) {
+            const ext = file.originalname.split('.').slice(1).join('.')
+            const name = `${req.user.sub}/` + `${req.params.id}/`+ "file." + ext;
+            cb(null, name);
+        }
+    }),
+    fileFilter(req, file, next) {
+        const isPdf = file.mimetype.startsWith("application/pdf");
+        if (isPdf) {
+            next(null, true);
+        } else {
+            next({ message: "That filetype isn't allowed!" }, false);
+        }
+    }
+};
+
+const singleUpload = multer(multerOptions).single("file");
+
+exports.upload = async (req, res, next) => {
+    await singleUpload(req, res, (err, some) => {
+        if (err) {
+            return res.status(422).send({
+                errors: [{ title: "Upload Error", detail: err.message }]
+            });
+        }
+        next();
+    });
+};
+
 exports.create = async (req, res, next) => {
     try {
         req.body.user = req.user.sub
@@ -9,7 +58,7 @@ exports.create = async (req, res, next) => {
         const job = await (new Job(req.body)).save();
         res.json(job);
     } catch (e) {
-      next(e)
+        next(e)
     }
 };
 
@@ -18,10 +67,10 @@ exports.getOne = async (req, res, next) => {
         const job = await Job.findOne({ _id: req.params.id, private: false });
         if (!job) return next();
         res.json({
-            name: job.name, 
-            description: job.description, 
-            budget: job.budget, 
-            skills: job.skills, 
+            name: job.name,
+            description: job.description,
+            budget: job.budget,
+            skills: job.skills,
             tickets: job.tickets,
             jobType: job.jobType,
             liability: job.liability,
@@ -32,10 +81,11 @@ exports.getOne = async (req, res, next) => {
             user: job.user,
             id: job._id,
             oneBid: job.oneBid,
-            bids: job.bids
+            bids: job.bids,
+            pdf: job.pdf
         });
     } catch (e) {
-      next(e)
+        next(e)
     }
 };
 
@@ -45,7 +95,7 @@ exports.get = async (req, res, next) => {
         const [jobs] = await Promise.all([jobsPromise]);
         res.json(jobs);
     } catch (e) {
-      next(e)
+        next(e)
     }
 };
 
@@ -55,16 +105,19 @@ exports.getFromUser = async (req, res, next) => {
         const [jobs] = await Promise.all([jobsPromise]);
         res.json(jobs);
     } catch (e) {
-      next(e)
+        next(e)
     }
 };
 
 exports.edit = async (req, res, next) => {
+    if (req.file) {
+        req.body.pdf = req.file.location;
+    }
     try {
         const job = await Job.findOneAndUpdate({ _id: req.params.id, user: req.user.sub }, req.body, {
             new: true, // return the new store instead of the old one
             runValidators: true,
-          }).exec();
+        }).exec();
         res.json(job)
     } catch (e) {
         next(e)
@@ -78,4 +131,5 @@ exports.delete = async (req, res, next) => {
     } catch (e) {
         next(e)
     }
-;}
+    ;
+}
