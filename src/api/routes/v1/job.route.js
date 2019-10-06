@@ -58,5 +58,9 @@ router
 router
     .route('/delete/:id')
     .post(checkJwt, controller.delete);
+  
+router
+    .route('/deleteFile/:name/:id')
+    .post(checkJwt, controller.deleteFile);
 
 module.exports = router;

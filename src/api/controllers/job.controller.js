@@ -22,8 +22,7 @@ const multerOptions = {
             cb(null, { fieldName: file.fieldname });
         },
         key(req, file, cb) {
-            const ext = file.originalname.split('.').slice(1).join('.')
-            const name = `${req.user.sub}/` + `${req.params.id}/`+ "file." + ext;
+            const name = `${req.user.sub}/` + `${req.params.id}/`+ file.originalname;
             cb(null, name);
         }
     }),
@@ -50,6 +49,23 @@ exports.upload = async (req, res, next) => {
     });
 };
 
+exports.deleteFile = async (req, res) => {
+    const params = {
+      Bucket: 'subhub01',
+      Delete: { // required
+        Objects: [ // required
+          {
+            Key: (`${req.user.sub}/` + `${req.params.id}/`+`${req.params.name}`), // required
+          },
+        ],
+      },
+    };
+    await s3.deleteObjects(params, (err, data) => {
+      if (err) next(err, err.stack); // an error occurred
+    });
+    res.json('done');
+  };
+  
 exports.create = async (req, res, next) => {
     try {
         req.body.user = req.user.sub
@@ -82,7 +98,7 @@ exports.getOne = async (req, res, next) => {
             id: job._id,
             oneBid: job.oneBid,
             bids: job.bids,
-            pdf: job.pdf
+            file: job.file
         });
     } catch (e) {
         next(e)
@@ -111,7 +127,7 @@ exports.getFromUser = async (req, res, next) => {
 
 exports.edit = async (req, res, next) => {
     if (req.file) {
-        req.body.pdf = req.file.location;
+        req.body.file = req.file.location;
     }
     try {
         const job = await Job.findOneAndUpdate({ _id: req.params.id, user: req.user.sub }, req.body, {

@@ -54,7 +54,7 @@ const jobSchema = new mongoose.Schema({
     max: 10,
     default: 0
   },
-  pdf: {
+  file: {
     type: String,
     trim: true
   },
