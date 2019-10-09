@@ -56,6 +56,10 @@ router
     .post(checkJwt, controller.upload, controller.edit);
 
 router
+    .route('/upload/:id')
+    .post(checkJwt, controller.upload, controller.uploadFile);
+
+router
     .route('/delete/:id')
     .post(checkJwt, controller.delete);
   

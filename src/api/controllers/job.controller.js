@@ -64,10 +64,10 @@ exports.deleteFile = async (req, res) => {
       if (err) next(err, err.stack); // an error occurred
     });
     try {
-        const job = await Job.findOneAndUpdate({ _id: req.params.id, user: req.user.sub }, {file: ''}, {
-            new: true, // return the new store instead of the old one
-            runValidators: true,
-        }).exec();
+        await Job.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
+            {$pull: {files: req.body.file}},
+            {safe: true, upsert: true},
+        );
         res.json('Done')
     } catch (e) {
         next(e)
@@ -106,7 +106,7 @@ exports.getOne = async (req, res, next) => {
             id: job._id,
             oneBid: job.oneBid,
             bids: job.bids,
-            file: job.file
+            files: job.files
         });
     } catch (e) {
         next(e)
@@ -142,6 +142,21 @@ exports.edit = async (req, res, next) => {
             new: true, // return the new store instead of the old one
             runValidators: true,
         }).exec();
+        res.json(job)
+    } catch (e) {
+        next(e)
+    }
+};
+
+exports.uploadFile = async (req, res, next) => {
+    if (req.file) {
+        file = req.file.location;
+    }
+    try {
+        const job = await Job.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
+            {$push: {files: file}},
+            {safe: true, upsert: true, new: true}
+        );
         res.json(job)
     } catch (e) {
         next(e)
