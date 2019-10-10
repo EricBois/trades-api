@@ -64,11 +64,11 @@ exports.deleteFile = async (req, res) => {
       if (err) next(err, err.stack); // an error occurred
     });
     try {
-        await Job.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
+        const job = await Job.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
             {$pull: {files: req.body.file}},
-            {safe: true, upsert: true},
+            {safe: true, upsert: true, new: true},
         );
-        res.json('Done')
+        res.json(job)
     } catch (e) {
         next(e)
     }
