@@ -15,7 +15,7 @@ const bidSchema = new mongoose.Schema({
   createdBy: String,
   trade: [{
     type: String,
-    default: "Whole Project"
+    default: 'Whole Project',
   }],
   user: {
     type: String,
@@ -25,7 +25,7 @@ const bidSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  price: Number
+  price: Number,
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },

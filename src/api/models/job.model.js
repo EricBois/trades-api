@@ -17,11 +17,11 @@ const jobSchema = new mongoose.Schema({
   name: {
     type: String,
     trim: true,
-    required: 'Must have a name!'
+    required: 'Must have a name!',
   },
   jobType: {
     type: String,
-    enum: ['Contract', 'Hourly']
+    enum: ['Contract', 'Hourly'],
   },
   budget: Number,
   description: {
@@ -31,34 +31,34 @@ const jobSchema = new mongoose.Schema({
   location: {
     type: String,
     enum: ['Calgary', 'Edmonton'],
-    required: 'Must have a location'
+    required: 'Must have a location',
   },
-  private: { 
+  private: {
     type: Boolean,
-    default: false
+    default: false,
   },
   skills: [{
     text: {
-      type: String
-    }
+      type: String,
+    },
   }],
   tickets: [{
     text: {
-      type: String
-    }
+      type: String,
+    },
   }],
   wcb: Boolean,
   liability: Boolean,
   quality: {
     type: Number,
     max: 10,
-    default: 0
+    default: 0,
   },
   files: [{
     type: String,
-    trim: true
+    trim: true,
   }],
-  oneBid: false
+  oneBid: false,
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },

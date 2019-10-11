@@ -1,12 +1,11 @@
 const express = require('express');
-const controller = require('../../controllers/bid.controller');
 
 const jwt = require('express-jwt');
-const jwtAuthz = require('express-jwt-authz');
 const jwksRsa = require('jwks-rsa');
+const controller = require('../../controllers/bid.controller');
 
 if (!process.env.AUTH0_DOMAIN || !process.env.AUTH0_AUDIENCE) {
-  throw 'Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file';
+  throw Error('Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file');
 }
 
 const checkJwt = jwt({
@@ -15,13 +14,13 @@ const checkJwt = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
+    jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
   }),
 
   // Validate the audience and the issuer.
   audience: process.env.AUTH0_AUDIENCE,
   issuer: `https://${process.env.AUTH0_DOMAIN}/`,
-  algorithms: ['RS256']
+  algorithms: ['RS256'],
 });
 
 
@@ -36,15 +35,15 @@ const router = express.Router();
 //   .post(checkJwt, controller.upload, controller.editAccount);
 
 router
-    .route('/create')
-    .post(checkJwt, controller.create);
+  .route('/create')
+  .post(checkJwt, controller.create);
 
 router
-    .route('/get/:id')
-    .get(checkJwt, controller.get);
+  .route('/get/:id')
+  .get(checkJwt, controller.get);
 
 router
-    .route('/delete')
-    .post(checkJwt, controller.delete);
+  .route('/delete')
+  .post(checkJwt, controller.delete);
 
 module.exports = router;

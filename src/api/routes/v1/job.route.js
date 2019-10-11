@@ -1,12 +1,11 @@
 const express = require('express');
-const controller = require('../../controllers/job.controller');
 
 const jwt = require('express-jwt');
-const jwtAuthz = require('express-jwt-authz');
 const jwksRsa = require('jwks-rsa');
+const controller = require('../../controllers/job.controller');
 
 if (!process.env.AUTH0_DOMAIN || !process.env.AUTH0_AUDIENCE) {
-  throw 'Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file';
+  throw Error('Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file');
 }
 
 const checkJwt = jwt({
@@ -15,13 +14,13 @@ const checkJwt = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
+    jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
   }),
 
   // Validate the audience and the issuer.
   audience: process.env.AUTH0_AUDIENCE,
   issuer: `https://${process.env.AUTH0_DOMAIN}/`,
-  algorithms: ['RS256']
+  algorithms: ['RS256'],
 });
 
 
@@ -36,35 +35,35 @@ const router = express.Router();
 //   .post(checkJwt, controller.upload, controller.editAccount);
 
 router
-    .route('/create')
-    .post(checkJwt, controller.create);
+  .route('/create')
+  .post(checkJwt, controller.create);
 
 router
-    .route('/get')
-    .get(checkJwt, controller.get);
+  .route('/get')
+  .get(checkJwt, controller.get);
 
 router
-    .route('/get/user')
-    .get(checkJwt, controller.getFromUser);
+  .route('/get/user')
+  .get(checkJwt, controller.getFromUser);
 
 router
-    .route('/view/:id')
-    .get(checkJwt, controller.getOne);
+  .route('/view/:id')
+  .get(checkJwt, controller.getOne);
 
 router
-    .route('/edit/:id')
-    .post(checkJwt, controller.upload, controller.edit);
+  .route('/edit/:id')
+  .post(checkJwt, controller.upload, controller.edit);
 
 router
-    .route('/upload/:id')
-    .post(checkJwt, controller.upload, controller.uploadFile);
+  .route('/upload/:id')
+  .post(checkJwt, controller.upload, controller.uploadFile);
 
 router
-    .route('/delete/:id')
-    .post(checkJwt, controller.delete);
-  
+  .route('/delete/:id')
+  .post(checkJwt, controller.delete);
+
 router
-    .route('/deleteFile/:name/:id')
-    .post(checkJwt, controller.deleteFile);
+  .route('/deleteFile/:name/:id')
+  .post(checkJwt, controller.deleteFile);
 
 module.exports = router;

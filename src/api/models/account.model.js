@@ -11,12 +11,12 @@ const accountSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['user', 'company'],
-    default: 'user'
+    default: 'user',
   },
   hourly: Number,
   avatar: {
     type: String,
-    trim: true
+    trim: true,
   },
   slug: String,
   user: {
@@ -35,7 +35,7 @@ const accountSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    trim: true
+    trim: true,
   },
   description: {
     type: String,
@@ -58,26 +58,26 @@ const accountSchema = new mongoose.Schema({
       type: String,
     },
   },
-  available: { 
-    type: Boolean
+  available: {
+    type: Boolean,
   },
   skills: [{
     text: {
-      type: String
-    }
+      type: String,
+    },
   }],
   tickets: [{
     text: {
-      type: String
-    }
+      type: String,
+    },
   }],
   wcb: String,
   liability: String,
   quality: {
     type: Number,
     max: 10,
-    default: 5
-  }
+    default: 5,
+  },
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
