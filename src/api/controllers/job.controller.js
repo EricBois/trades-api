@@ -28,7 +28,8 @@ const multerOptions = {
   }),
   fileFilter(req, file, next) {
     const isPdf = file.mimetype.startsWith('application/pdf');
-    if (isPdf) {
+    const isPhoto = file.mimetype.startsWith('image/');
+    if (isPdf || isPhoto) {
       next(null, true);
     } else {
       next({ message: "That filetype isn't allowed!" }, false);
@@ -63,14 +64,26 @@ exports.deleteFile = async (req, res, next) => {
   await s3.deleteObjects(params, (err) => {
     if (err) next(err, err.stack); // an error occurred
   });
-  try {
-    const job = await Job.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
-      { $pull: { files: req.body.file } },
-      { safe: true, upsert: true, new: true });
-    return res.json(job);
-  } catch (e) {
-    return next(e);
+  if (req.params.type === 'file') {
+    try {
+      const job = await Job.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
+        { $pull: { files: req.body.file } },
+        { safe: true, upsert: true, new: true });
+      return res.json(job);
+    } catch (e) {
+      return next(e);
+    }
+  } else {
+    try {
+      const job = await Job.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
+        { $pull: { photos: req.body.file } },
+        { safe: true, upsert: true, new: true });
+      return res.json(job);
+    } catch (e) {
+      return next(e);
+    }
   }
+  
 };
 
 exports.create = async (req, res, next) => {
@@ -106,6 +119,7 @@ exports.getOne = async (req, res, next) => {
       oneBid: job.oneBid,
       bids: job.bids,
       files: job.files,
+      photos: job.photos
     });
   } catch (e) {
     return next(e);
@@ -162,6 +176,17 @@ exports.delete = async (req, res, next) => {
   try {
     await Job.deleteOne({ _id: req.params.id, user: req.user.sub });
     res.json('Successfully Removed Project');
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.uploadPhoto = async (req, res, next) => {
+  try {
+    const job = await Job.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
+      { $push: { photos: req.file.location } },
+      { safe: true, upsert: true, new: true });
+    res.json(job);
   } catch (e) {
     next(e);
   }

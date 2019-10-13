@@ -63,7 +63,10 @@ router
   .post(checkJwt, controller.delete);
 
 router
-  .route('/deleteFile/:name/:id')
+  .route('/deleteFile/:name/:id/:type')
   .post(checkJwt, controller.deleteFile);
 
+router
+  .route('/uploadPhoto/:id')
+  .post(checkJwt, controller.upload, controller.uploadPhoto);
 module.exports = router;

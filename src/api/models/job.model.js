@@ -58,6 +58,10 @@ const jobSchema = new mongoose.Schema({
     type: String,
     trim: true,
   }],
+  photos: [{
+    type: String,
+    trim: true
+  }],
   oneBid: false,
 }, {
   toJSON: { virtuals: true },
