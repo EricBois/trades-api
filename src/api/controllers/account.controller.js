@@ -88,10 +88,6 @@ exports.editAccount = async (req, res, next) => {
     }
     var params = { id: req.user.sub };
     await auth0.updateUser(params, req.body, function (err, user) {
-      if (err) {
-        // Handle error.
-        console.log(err)
-      }
       res.json(user);
     });
   } catch (e) {
