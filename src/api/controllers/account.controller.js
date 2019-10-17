@@ -1,8 +1,16 @@
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
-const axios = require('axios');
-const Account = require('../models/account.model');
+var ManagementClient = require('auth0').ManagementClient;
+
+var auth0 = new ManagementClient({
+  domain: 'dev-2upadx1s.auth0.com',
+  clientId: `${process.env.AUTH0_MANAGEMENT_ID}`,
+  clientSecret: `${process.env.AUTH0_MANAGEMENT_SECRET}`,
+  scope: 'read:users update:users'
+});
+
+
 
 function formatPhoneNumber(phoneNumberString) {
   const cleaned = (`${phoneNumberString}`).replace(/\D/g, '');
@@ -62,48 +70,31 @@ exports.upload = async (req, res, next) => {
 
 exports.getAccount = async (req, res, next) => {
   try {
-    // console.log(req.headers.authorization)
-    const account = await Account.findOne({ user: req.user.sub });
-    if (!account) {
-      let name = '';
-      let email = '';
-      let avatar = '';
-      axios.defaults.headers.common.Authorization = req.headers.authorization;
-      await axios.get('https://dev-2upadx1s.auth0.com/userinfo')
-        .then((response) => {
-          name = response.data.name;
-          email = response.data.email;
-          avatar = response.data.avatar;
-        })
-        .catch((error) => {
-          next(error);
-        });
-
-      const newAccount = await (new Account({
-        user: req.user.sub, name, email, avatar,
-      })).save();
-      res.json({ newAccount });
-    } else {
-      res.json({ account });
-    }
-  } catch (e) { next(e); }
+    await auth0.getUser({ id: req.user.sub }, function (err, user) {
+      res.json(user);
+    });
+  } catch (e) {
+    return next(e);
+  }
 };
 
 exports.editAccount = async (req, res, next) => {
-  if (req.file) {
-    req.body.avatar = req.file.location;
-  }
-  if (req.body.phone !== '' && req.body.phone !== null && req.body.phone !== undefined) {
-    req.body.phone = formatPhoneNumber(req.body.phone);
-  }
-
   try {
-    const account = await Account.findOneAndUpdate({ user: req.user.sub }, req.body, {
-      new: true, // return the new store instead of the old one
-      runValidators: true,
-    }).exec();
-    res.json(account);
+    if (req.file) {
+      req.body.picture = req.file.location;
+    }
+    if (req.body.user_metadata.phone !== '' && req.body.user_metadata.phone !== null && req.body.user_metadata.phone !== undefined) {
+      req.body.user_metadata.phone = formatPhoneNumber(req.body.user_metadata.phone);
+    }
+    var params = { id: req.user.sub };
+    await auth0.updateUser(params, req.body, function (err, user) {
+      if (err) {
+        // Handle error.
+        console.log(err)
+      }
+      res.json(user);
+    });
   } catch (e) {
-    next(e);
+    return next(e);
   }
 };
