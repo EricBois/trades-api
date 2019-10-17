@@ -38,14 +38,10 @@ const jobSchema = new mongoose.Schema({
     default: false,
   },
   skills: [{
-    text: {
-      type: String,
-    },
+    type: String,
   }],
   tickets: [{
-    text: {
-      type: String,
-    },
+    type: String,
   }],
   wcb: Boolean,
   liability: Boolean,

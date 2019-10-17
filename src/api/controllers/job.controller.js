@@ -1,8 +1,6 @@
-
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
-const Account = require('../models/account.model');
 const Job = require('../models/job.model');
 
 aws.config.update({
@@ -89,8 +87,8 @@ exports.deleteFile = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   try {
     req.body.user = req.user.sub;
-    const account = await Account.findOne({ user: req.user.sub });
-    req.body.createdBy = account.name;
+    // const account = await Account.findOne({ user: req.user.sub });
+    // req.body.createdBy = req.user.name;
     const job = await (new Job(req.body)).save();
     res.json(job);
   } catch (e) {
