@@ -86,8 +86,7 @@ exports.editAccount = async (req, res, next) => {
     if (req.body.user_metadata.phone !== '' && req.body.user_metadata.phone !== null && req.body.user_metadata.phone !== undefined) {
       req.body.user_metadata.phone = formatPhoneNumber(req.body.user_metadata.phone);
     }
-    var params = { id: req.user.sub };
-    await auth0.updateUser(params, req.body, function (err, user) {
+    await auth0.updateUser({ id: req.user.sub }, req.body, function (err, user) {
       res.json(user);
     });
   } catch (e) {
