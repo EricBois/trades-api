@@ -40,7 +40,6 @@ const multerOptions = {
     },
     key(req, file, cb) {
       const ext = file.originalname.split('.').slice(1).join('.');
-      console.log(file);
       const name = `${`${req.user.sub}/logo.${ext}`}`;
       cb(null, name);
     },
