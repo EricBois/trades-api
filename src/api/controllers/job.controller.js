@@ -2,6 +2,7 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
 const Job = require('../models/job.model');
+const Bid = require('../models/bid.model');
 
 aws.config.update({
   secretAccessKey: process.env.AWS_KEY,
@@ -172,6 +173,7 @@ exports.uploadFile = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
+    await Bid.deleteMany({ project: req.params.id });
     await Job.deleteOne({ _id: req.params.id, user: req.user.sub });
     res.json('Successfully Removed Project');
   } catch (e) {
