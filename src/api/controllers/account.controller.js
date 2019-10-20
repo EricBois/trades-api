@@ -82,8 +82,8 @@ exports.editAccount = async (req, res, next) => {
     if (req.file) {
       req.body.picture = req.file.location;
     }
-    if (req.body.phone_number !== '' && req.body.phone_number !== null && req.body.phone_number !== undefined) {
-      req.body.phone_number = formatPhoneNumber(req.body.phone_number);
+    if (req.body.user_metadata.phone !== '' && req.body.user_metadata.phone !== null && req.body.user_metadata.phone !== undefined) {
+      req.body.user_metadata.phone = formatPhoneNumber(req.body.user_metadata.phone);
     }
     await auth0.updateUser({ id: req.user.sub }, req.body, function (err, user) {
       res.json(user);
