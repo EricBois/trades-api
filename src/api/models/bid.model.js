@@ -17,6 +17,8 @@ const bidSchema = new mongoose.Schema({
     type: String,
     default: 'Whole Project',
   }],
+  phone: '',
+  email: '',
   user: {
     type: String,
     required: 'Must have user UID!',
