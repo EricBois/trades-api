@@ -1,8 +1,21 @@
 const Bid = require('../models/bid.model');
 
+function formatPhoneNumber(phoneNumberString) {
+  const cleaned = (`${phoneNumberString}`).replace(/\D/g, '');
+  const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    const intlCode = (match[1] ? '+1 ' : '');
+    return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+  }
+  return null;
+}
+
 exports.create = async (req, res, next) => {
   try {
     req.body.user = req.user.sub;
+    if (req.body.phone !== '' && req.body.phone !== null && req.body.phone !== undefined) {
+      req.body.phone = formatPhoneNumber(req.body.phone);
+    }
     // const account = await Account.findOne({ user: req.user.sub });
     // req.body.createdBy = account.name;
     const bid = await (new Bid(req.body)).save();

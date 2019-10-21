@@ -58,6 +58,7 @@ const jobSchema = new mongoose.Schema({
     type: String,
     trim: true
   }],
+  phone: String,
   oneBid: false,
 }, {
   toJSON: { virtuals: true },
