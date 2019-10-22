@@ -62,7 +62,6 @@
     "starter project"
   ],
   "dependencies": {
-    "@sendgrid/mail": "^6.4.0",
     "auth0": "^2.20.0",
     "auth0-js": "^9.11.3",
     "aws-sdk": "^2.524.0",

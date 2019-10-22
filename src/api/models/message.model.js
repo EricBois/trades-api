@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-const bidSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
   Created: {
     type: Date,
     default: Date.now,
@@ -12,25 +12,31 @@ const bidSchema = new mongoose.Schema({
     ref: 'Job',
     required: 'You must supply a job_id!',
   },
-  createdBy: String,
-  trade: [{
-    type: String,
-    default: 'Whole Project',
-  }],
-  phone: String,
-  email: String,
-  user: {
+  from: {
     type: String,
     required: 'Must have user UID!',
   },
-  description: {
+  to: {
     type: String,
-    trim: true,
+    required: 'Must have user UID!',
   },
-  price: Number,
+  messages: [
+    {
+      Created: {
+        type: Date,
+        default: Date.now,
+      },
+      name: String,
+      text: {
+        type: String,
+        trim: true
+      }
+    }
+  ],
+  read: Boolean
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
 });
 
-module.exports = mongoose.model('Bid', bidSchema);
+module.exports = mongoose.model('Message', messageSchema);

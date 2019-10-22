@@ -131,7 +131,8 @@ exports.getOne = async (req, res, next) => {
       oneBid: job.oneBid,
       bids: job.bids,
       files: job.files,
-      photos: job.photos
+      photos: job.photos,
+      email: job.email
     });
   } catch (e) {
     return next(e);
@@ -204,3 +205,7 @@ exports.uploadPhoto = async (req, res, next) => {
     next(e);
   }
 };
+
+exports.email = async (req, res, next) => {
+
+}
