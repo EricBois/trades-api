@@ -12,6 +12,7 @@ const messageSchema = new mongoose.Schema({
     ref: 'Job',
     required: 'You must supply a job_id!',
   },
+  project_name: String,
   from: {
     type: String,
     required: 'Must have user UID!',
@@ -20,6 +21,7 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: 'Must have user UID!',
   },
+  sender: String,
   messages: [
     {
       Created: {
@@ -33,7 +35,9 @@ const messageSchema = new mongoose.Schema({
       }
     }
   ],
-  read: Boolean
+  read: [{
+    type: String
+  }]
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },

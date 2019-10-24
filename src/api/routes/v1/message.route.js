@@ -30,4 +30,16 @@ router
   .route('/send')
   .post(checkJwt, controller.create);
 
+router
+  .route('/send/:id')
+  .post(checkJwt, controller.create);
+
+router
+  .route('/read/:id')
+  .get(checkJwt, controller.read);
+
+router
+  .route('/get')
+  .get(checkJwt, controller.get);
+
 module.exports = router;
