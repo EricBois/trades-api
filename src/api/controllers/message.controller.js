@@ -45,9 +45,13 @@ exports.get = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   //hide message from user
   const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
-    { from : req.user.sub }] }, { $push: { delete: req.user.sub } }, {
+    { from : req.user.sub }] }, { $push: { delete: req.user.sub, read: req.user.sub } }, {
     new: true, // return the new store instead of the old one
     runValidators: true,
   }).exec();
+  if (message.delete.length >= 2) {
+    await Message.deleteOne({ _id: req.params.id, $or: [{ to : req.user.sub },
+      { from : req.user.sub }] });
+  }
   res.json(message)
 }
