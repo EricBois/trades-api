@@ -13,8 +13,8 @@ exports.create = async (req, res, next) => {
       return res.json(message);
     } else {
       req.body.from = req.user.sub;
-      req.body.sender = req.body.messages.name
-      req.body.read = [req.user.sub]
+      req.body.sender = req.body.messages.name;
+      req.body.read = [req.user.sub];
       const message = await (new Message(req.body)).save();
       return res.json(message)
     }
