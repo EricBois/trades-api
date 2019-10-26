@@ -35,6 +35,10 @@ router
   .post(checkJwt, controller.create);
 
 router
+  .route('/delete/:id')
+  .post(checkJwt, controller.delete);
+
+router
   .route('/read/:id')
   .get(checkJwt, controller.read);
 

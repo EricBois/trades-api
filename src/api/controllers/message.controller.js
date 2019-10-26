@@ -6,14 +6,13 @@ exports.create = async (req, res, next) => {
       const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
         { from : req.user.sub }] },
         { 
-          $set: {read: [req.user.sub]},
+          $set: {read: [req.user.sub], delete: []},
           $push: { messages: req.body.message } 
         },
         { new: true });
       return res.json(message);
     } else {
       req.body.from = req.user.sub;
-      req.body.sender = req.body.messages.name;
       req.body.read = [req.user.sub];
       const message = await (new Message(req.body)).save();
       return res.json(message)
@@ -42,3 +41,13 @@ exports.get = async (req, res, next) => {
     next(e);
   }
 };
+
+exports.delete = async (req, res, next) => {
+  //hide message from user
+  const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
+    { from : req.user.sub }] }, { $push: { delete: req.user.sub } }, {
+    new: true, // return the new store instead of the old one
+    runValidators: true,
+  }).exec();
+  res.json(message)
+}

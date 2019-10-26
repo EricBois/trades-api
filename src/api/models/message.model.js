@@ -21,7 +21,7 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: 'Must have user UID!',
   },
-  sender: String,
+  delete: [String],
   messages: [
     {
       Created: {
