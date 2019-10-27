@@ -1,4 +1,25 @@
 const Message = require('../models/message.model');
+// Load the AWS SDK for Node.js
+var AWS = require('aws-sdk');
+// Set the region 
+AWS.config.update({region: 'us-east-1'});
+
+const Email = async (to, from, text) => {
+  // Create the promise and SES service object
+  var sendPromise = new AWS.SES({apiVersion: '2010-12-01'}).sendTemplatedEmail({
+    Destination: { /* required */
+      ToAddresses: [
+        to,
+      ]
+    },
+    Source: from, /* required */
+    Template: 'TEMPLATE_NAME', /* required */
+    TemplateData: '{ \"REPLACEMENT_TAG_NAME\":\"REPLACEMENT_VALUE\" }', /* required */
+    ReplyToAddresses: [
+      'EMAIL_ADDRESS'
+    ]
+  }).promise();
+}
 
 exports.create = async (req, res, next) => {
   try {

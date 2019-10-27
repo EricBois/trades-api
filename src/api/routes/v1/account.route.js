@@ -34,4 +34,8 @@ router
   .route('/edit')
   .post(checkJwt, controller.upload, controller.editAccount);
 
+router
+  .route('/getProfile/:id')
+  .get(checkJwt, controller.getProfileBid);
+
 module.exports = router;

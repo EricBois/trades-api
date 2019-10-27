@@ -92,3 +92,17 @@ exports.editAccount = async (req, res, next) => {
     return next(e);
   }
 };
+
+exports.getProfileBid = async (req, res, next) => {
+  try {
+    await auth0.getUser({ id: req.params.id }, function (err, user) {
+      res.json({
+        name: user.name,
+        picture: user.picture,
+        metadata: user.user_metadata
+      });
+    });
+  } catch (e) {
+    return next(e);
+  }
+};
