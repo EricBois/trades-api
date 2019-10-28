@@ -1,6 +1,7 @@
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
+const Photos = require('../models/photos.model');
 var ManagementClient = require('auth0').ManagementClient;
 
 var auth0 = new ManagementClient({
@@ -39,8 +40,7 @@ const multerOptions = {
       cb(null, { fieldName: file.fieldname });
     },
     key(req, file, cb) {
-      const ext = file.originalname.split('.').slice(1).join('.');
-      const name = `${`${req.user.sub}/logo.${ext}`}`;
+      const name = `${`${req.user.sub}/${file.originalname}`}`;
       cb(null, name);
     },
   }),
@@ -67,11 +67,51 @@ exports.upload = async (req, res, next) => {
   });
 };
 
+exports.deleteLogo = async (req, res, next) => {
+  const params = {
+    Bucket: 'subhub01',
+    Delete: { // required
+      Objects: [ // required
+        {
+          Key: (`${`${req.user.sub}/${req.params.name}`}`), // required
+        },
+      ],
+    },
+  };
+  await s3.deleteObjects(params, (err) => {
+    if (err) next(err, err.stack); // an error occurred
+  });
+};
+
+exports.deletePhoto = async (req, res, next) => {
+  const params = {
+    Bucket: 'subhub01',
+    Delete: { // required
+      Objects: [ // required
+        {
+          Key: (`${`${req.user.sub}/${req.params.name}`}`), // required
+        },
+      ],
+    },
+  };
+  await s3.deleteObjects(params, (err) => {
+    if (err) next(err, err.stack); // an error occurred
+  });
+  try {
+    const photos = await Photos.findOneAndUpdate({ user: req.user.sub },
+      { $pull: { photos: req.body.file } },
+      { safe: true, upsert: true, new: true });
+    return res.json(photos);
+  } catch (e) {
+    return next(e)
+  }
+};
+
 exports.getAccount = async (req, res, next) => {
   try {
-    await auth0.getUser({ id: req.user.sub }, function (err, user) {
-      res.json(user);
-    });
+    const user = await auth0.getUser({ id: req.user.sub });
+    const photos = await Photos.findOne({user: req.user.sub});
+    return res.json({user, photos})
   } catch (e) {
     return next(e);
   }
@@ -82,7 +122,7 @@ exports.editAccount = async (req, res, next) => {
     if (req.file) {
       req.body.picture = req.file.location;
     }
-    if (req.body.user_metadata.phone !== '' && req.body.user_metadata.phone !== null && req.body.user_metadata.phone !== undefined) {
+    if ( !req.file && req.body.user_metadata.phone !== '' && req.body.user_metadata.phone !== null && req.body.user_metadata.phone !== undefined) {
       req.body.user_metadata.phone = formatPhoneNumber(req.body.user_metadata.phone);
     }
     await auth0.updateUser({ id: req.user.sub }, req.body, function (err, user) {
@@ -93,14 +133,33 @@ exports.editAccount = async (req, res, next) => {
   }
 };
 
+exports.uploadPhotos = async (req, res, next) => {
+  try {
+    const photos = await Photos.findOneAndUpdate({ user: req.user.sub },
+      { $push: { photos: req.file.location } },
+      { safe: true, upsert: true, new: true });
+    
+    if (!photos) {
+      req.body.user = req.user.sub
+      req.body.photos = req.file.location
+      const photos = await (new Photos(req.body)).save();
+      return res.json(photos);
+    }
+    return res.json(photos);
+  } catch (e) {
+    return next(e)
+  }
+};
+
 exports.getProfileBid = async (req, res, next) => {
   try {
-    await auth0.getUser({ id: req.params.id }, function (err, user) {
-      res.json({
-        name: user.name,
-        picture: user.picture,
-        metadata: user.user_metadata
-      });
+    const user = await auth0.getUser({ id: req.params.id });
+    const photos = await Photos.findOne({user: req.params.id});
+    res.json({
+      name: user.name,
+      picture: user.picture,
+      metadata: user.user_metadata,
+      photos: photos
     });
   } catch (e) {
     return next(e);

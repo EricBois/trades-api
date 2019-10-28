@@ -38,4 +38,16 @@ router
   .route('/getProfile/:id')
   .get(checkJwt, controller.getProfileBid);
 
+router
+  .route('/deleteLogo/:name')
+  .post(checkJwt, controller.deleteLogo);
+
+router
+  .route('/deletePhoto/:name')
+  .post(checkJwt, controller.deletePhoto);
+
+router
+  .route('/uploadPhoto')
+  .post(checkJwt, controller.upload, controller.uploadPhotos);
+
 module.exports = router;
