@@ -29,9 +29,33 @@ const jobSchema = new mongoose.Schema({
     trim: true,
   },
   location: {
-    type: String,
-    enum: ['Calgary', 'Edmonton'],
-    required: 'Must have a location',
+    type: {
+      type: String,
+      default: 'Point',
+    },
+    lat: {
+      type: Number,
+      default: 0,
+    },
+    lng: {
+      type: Number,
+      default: 0,
+    },
+    address: {
+      type: String,
+    },
+    country: {
+      type: String
+    },
+    city: {
+      type: String
+    },
+    province: {
+      type: String
+    },
+    url: {
+      type: String
+    }
   },
   private: {
     type: Boolean,
