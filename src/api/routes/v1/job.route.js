@@ -69,4 +69,5 @@ router
 router
   .route('/uploadPhoto/:id')
   .post(checkJwt, controller.upload, controller.uploadPhoto);
+
 module.exports = router;

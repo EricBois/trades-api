@@ -205,7 +205,3 @@ exports.uploadPhoto = async (req, res, next) => {
     next(e);
   }
 };
-
-exports.email = async (req, res, next) => {
-
-}

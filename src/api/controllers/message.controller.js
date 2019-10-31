@@ -75,4 +75,4 @@ exports.delete = async (req, res, next) => {
       { from : req.user.sub }] });
   }
   res.json(message)
-}
+};

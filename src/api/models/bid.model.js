@@ -7,6 +7,19 @@ const bidSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  meeting: {
+    request: {
+      type: Boolean,
+      default: false
+    },
+    dates: [{
+      type: String,
+    }],
+    host: {
+      type: String,
+    },
+    description: String
+  },
   project: {
     type: mongoose.Schema.ObjectId,
     ref: 'Job',

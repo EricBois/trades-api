@@ -46,4 +46,12 @@ router
   .route('/delete')
   .post(checkJwt, controller.delete);
 
+router
+  .route('/setMeeting')
+  .post(checkJwt, controller.meeting);
+
+router
+  .route('/email')
+  .post(checkJwt, controller.email);
+
 module.exports = router;

@@ -43,3 +43,22 @@ exports.delete = async (req, res, next) => {
     next(e);
   }
 };
+
+exports.email = async (req, res, next) => {
+  res.json(req.body)
+};
+
+exports.meeting = async (req, res, next) => {
+  try {
+    req.body.bid.forEach( bid =>  {
+      const check = Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, {meeting: req.body.meeting}, {
+          new: true, // return the new store instead of the old one
+          runValidators: true,
+        }).exec();
+        if (!check) return next()
+    })
+    res.json('done')
+  } catch (e) {
+    return next(e)
+  }
+};
