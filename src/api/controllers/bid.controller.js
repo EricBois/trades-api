@@ -62,3 +62,13 @@ exports.meeting = async (req, res, next) => {
     return next(e)
   }
 };
+
+exports.getMeetings = async (req, res, next) => {
+  try {
+    const bidsPromise = Bid.find({ user: req.user.sub }).sort({ Created: -1 });
+    const [bids] = await Promise.all([bidsPromise]);
+    res.json(bids);
+  } catch (e) {
+    next(e);
+  }
+};

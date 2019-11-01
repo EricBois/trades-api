@@ -15,11 +15,12 @@ const bidSchema = new mongoose.Schema({
     dates: [{
       type: String,
     }],
-    host: {
+    host: { // Project Creator
       type: String,
     },
     description: String
   },
+  projectName: String,
   project: {
     type: mongoose.Schema.ObjectId,
     ref: 'Job',
@@ -32,7 +33,7 @@ const bidSchema = new mongoose.Schema({
   }],
   phone: String,
   email: String,
-  user: {
+  user: { // Bid Creator
     type: String,
     required: 'Must have user UID!',
   },
