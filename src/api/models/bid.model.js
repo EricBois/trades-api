@@ -15,11 +15,11 @@ const bidSchema = new mongoose.Schema({
     dates: [{
       type: String,
     }],
-    host: { // Project Creator
-      type: String,
-    },
+    host: String, // Project Creator
     description: String
   },
+  address: String,
+  addressUrl: String,
   projectName: String,
   project: {
     type: mongoose.Schema.ObjectId,
