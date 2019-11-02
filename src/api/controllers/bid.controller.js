@@ -51,7 +51,7 @@ exports.email = async (req, res, next) => {
 exports.meeting = async (req, res, next) => {
   try {
     req.body.bid.forEach( bid =>  {
-      const check = Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, {host: req.user.sub, meeting: req.body.meeting, confirm: {status: false}}, {
+      const check = Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, { contractor: req.body.contractor, request: true, host: req.user.sub, meeting: req.body.meeting, confirm: {status: false} }, {
           new: true, // return the new store instead of the old one
           runValidators: true,
         }).exec();
@@ -78,7 +78,7 @@ exports.confirmMeeting = async (req, res, next) => {
 
 exports.getMeetings = async (req, res, next) => {
   try {
-    const bidsPromise = Bid.find({ $or: [{ user : req.user.sub },
+    const bidsPromise = Bid.find({ request: true, $or: [{ user : req.user.sub },
       { host: req.user.sub }] }).sort({ Created: -1 });
     const [bids] = await Promise.all([bidsPromise]);
     res.json(bids);

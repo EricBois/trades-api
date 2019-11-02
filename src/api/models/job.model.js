@@ -23,7 +23,10 @@ const jobSchema = new mongoose.Schema({
     type: String,
     enum: ['Contract', 'Hourly'],
   },
-  budget: Number,
+  budget: {
+    type: String,
+    required: 'Please enter a budget'
+  },
   description: {
     type: String,
     trim: true,

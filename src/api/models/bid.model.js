@@ -16,15 +16,15 @@ const bidSchema = new mongoose.Schema({
     description: String
   },
   host: String, // project Creator
+  request: {
+    type: Boolean,
+    default: false
+  },
   meeting: {
-    request: {
-      type: Boolean,
-      default: false
-    },
     dates: [{
       type: String,
     }],
-    host: String, // Project Creator
+    host: String, // Project Creator uid
     description: String
   },
   address: String,
@@ -35,7 +35,8 @@ const bidSchema = new mongoose.Schema({
     ref: 'Job',
     required: 'You must supply a job_id!',
   },
-  createdBy: String,
+  contractor: String, // project creator name
+  createdBy: String, // bidder
   trade: [{
     type: String,
     default: 'Whole Project',
