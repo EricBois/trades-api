@@ -7,6 +7,15 @@ const bidSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  confirm: {
+    status: {
+      type: Boolean,
+      default: false
+    },
+    date: String,
+    description: String
+  },
+  host: String, // project Creator
   meeting: {
     request: {
       type: Boolean,
