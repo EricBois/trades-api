@@ -48,29 +48,17 @@ exports.email = async (req, res, next) => {
   res.json(req.body)
 };
 
-exports.meeting = async (req, res, next) => {
+exports.meeting = (req, res, next) => {
   try {
-    req.body.bid.forEach( bid =>  {
-      const check = Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, { contractor: req.body.contractor, request: true, host: req.user.sub, meeting: req.body.meeting, confirm: {status: false} }, {
+    req.body.bid.forEach(async bid =>  {
+      const check = await Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, req.body.meeting, {
           new: true, // return the new store instead of the old one
           runValidators: true,
         }).exec();
         if (!check) return next()
+        
+        res.json(check)
     })
-    res.json('Done')
-  } catch (e) {
-    return next(e)
-  }
-};
-
-exports.confirmMeeting = async (req, res, next) => {
-  try {
-    const check = await Bid.findOneAndUpdate({  _id: req.body.bid.id, user: req.body.bid.user }, {confirm: req.body.confirm}, {
-      new: true, // return the new store instead of the old one
-      runValidators: true,
-    }).exec();
-    if (!check) return next()
-    res.json(check)
   } catch (e) {
     return next(e)
   }

@@ -55,10 +55,6 @@ router
   .get(checkJwt, controller.getMeetings);
 
 router
-  .route('/confirm')
-  .post(checkJwt, controller.confirmMeeting);
-
-router
   .route('/email')
   .post(checkJwt, controller.email);
 

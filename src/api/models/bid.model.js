@@ -15,6 +15,13 @@ const bidSchema = new mongoose.Schema({
     date: String,
     description: String
   },
+  change: { // meeting change
+    status: {
+      type: Boolean,
+      default: false
+    },
+    uid: String
+  },
   host: String, // project Creator
   request: {
     type: Boolean,
