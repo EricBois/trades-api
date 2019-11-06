@@ -16,10 +16,7 @@ exports.edit = async (req, res, next) => {
   try {
     const team = await Team.findOneAndUpdate({ user: req.user.sub },
       { $push: { team: req.body.team } },
-    {
-      new: true, // return the new team
-      runValidators: true,
-    }).exec();
+      { safe: true, upsert: true, new: true });
     res.json(team);
   } catch (e) {
     next(e);
