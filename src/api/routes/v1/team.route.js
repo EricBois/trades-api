@@ -2,7 +2,7 @@ const express = require('express');
 
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
-const controller = require('../../controllers/account.controller');
+const controller = require('../../controllers/team.controller');
 
 if (!process.env.AUTH0_DOMAIN || !process.env.AUTH0_AUDIENCE) {
   throw Error('Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file');
@@ -27,31 +27,11 @@ const checkJwt = jwt({
 const router = express.Router();
 
 router
-  .route('/get')
-  .get(checkJwt, controller.getAccount);
-
-router
-  .route('/public')
-  .get(checkJwt, controller.getPublicAccount);
+  .route('/fetch')
+  .get(checkJwt, controller.get);
 
 router
   .route('/edit')
-  .post(checkJwt, controller.upload, controller.editAccount);
-
-router
-  .route('/getProfile/:id')
-  .get(checkJwt, controller.getProfileBid);
-
-router
-  .route('/deleteLogo/:name')
-  .post(checkJwt, controller.deleteLogo);
-
-router
-  .route('/deletePhoto/:name')
-  .post(checkJwt, controller.deletePhoto);
-
-router
-  .route('/uploadPhoto')
-  .post(checkJwt, controller.upload, controller.uploadPhotos);
+  .post(checkJwt, controller.edit);
 
 module.exports = router;

@@ -3,6 +3,7 @@ const accountRoutes = require('./account.route');
 const jobRoutes = require('./job.route');
 const bidRoutes = require('./bid.route');
 const messageRoutes = require('./message.route');
+const teamRoutes = require('./team.route');
 
 const router = express.Router();
 
@@ -23,6 +24,8 @@ router.use('/job', jobRoutes);
 router.use('/bid', bidRoutes);
 
 router.use('/message', messageRoutes);
+
+router.use('/team', teamRoutes);
 
 
 module.exports = router;

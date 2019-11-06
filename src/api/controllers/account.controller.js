@@ -117,6 +117,24 @@ exports.getAccount = async (req, res, next) => {
   }
 };
 
+exports.getPublicAccount = async (req, res, next) => {
+  try {
+    const sorted = []
+    const userPromise = await auth0.getUsers();
+    const [users] = await Promise.all([userPromise]);
+    for (const key in users) {
+      const user = users[key]
+      user._id = key
+      if (user.user_metadata.available) {
+        sorted.push({name: user.name, id: user.user_id})
+      }
+    }
+    return res.json(sorted)
+  } catch (e) {
+    return next(e);
+  }
+};
+
 exports.editAccount = async (req, res, next) => {
   try {
     if (req.file) {
