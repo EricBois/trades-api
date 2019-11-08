@@ -101,6 +101,7 @@ exports.create = async (req, res, next) => {
     if (req.body.phone !== '' && req.body.phone !== null && req.body.phone !== undefined) {
       req.body.phone = formatPhoneNumber(req.body.phone);
     }
+    req.body.allowed = [req.user.sub]
     // const account = await Account.findOne({ user: req.user.sub });
     // req.body.createdBy = req.user.name;
     const job = await (new Job(req.body)).save();
@@ -112,8 +113,11 @@ exports.create = async (req, res, next) => {
 
 exports.getOne = async (req, res, next) => {
   try {
-    const job = await Job.findOne({ _id: req.params.id, private: false });
+    const job = await Job.findOne({ _id: req.params.id });
     if (!job) return next();
+    if (job.private && !job.allowed.includes(req.user.sub)) {
+      return next()
+    } 
     return res.json({
       name: job.name,
       description: job.description,
@@ -142,6 +146,16 @@ exports.getOne = async (req, res, next) => {
 exports.get = async (req, res, next) => {
   try {
     const jobsPromise = Job.find({ private: false }).sort({ Created: -1 });
+    const [jobs] = await Promise.all([jobsPromise]);
+    res.json(jobs);
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.getPrivate = async (req, res, next) => {
+  try {
+    const jobsPromise = Job.find({ user: req.user.sub, private: true }).sort({ Created: -1 });
     const [jobs] = await Promise.all([jobsPromise]);
     res.json(jobs);
   } catch (e) {

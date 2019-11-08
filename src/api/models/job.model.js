@@ -64,6 +64,13 @@ const jobSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  allowed: [{
+    type: String
+  }],
+  team: [{
+    id: String, // ID
+    name: String,
+  }],
   skills: [{
     type: String,
   }],

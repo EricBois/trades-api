@@ -43,6 +43,10 @@ router
   .get(checkJwt, controller.get);
 
 router
+  .route('/private')
+  .get(checkJwt, controller.getPrivate);
+
+router
   .route('/get/user')
   .get(checkJwt, controller.getFromUser);
 
