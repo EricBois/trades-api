@@ -177,6 +177,17 @@ exports.edit = async (req, res, next) => {
   if (req.file) {
     req.body.file = req.file.location;
   }
+  if (req.body.team) {
+    const list = []
+    for (const key in req.body.team) {
+      const user = req.body.team[key]
+      user.id = key
+      console.log(user.uid)
+      list.push(user.uid)
+    }
+    list.push(req.user.sub)
+    req.body.allowed = list
+  }
   try {
     const job = await Job.findOneAndUpdate({ _id: req.params.id, user: req.user.sub }, req.body, {
       new: true, // return the new store instead of the old one

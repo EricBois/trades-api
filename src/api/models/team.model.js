@@ -8,7 +8,7 @@ const teamSchema = new mongoose.Schema({
     required: 'Must have user UID!',
   },
   team: [{
-    id: String, // ID
+    uid: String, // ID
     name: String,
   }],
 });

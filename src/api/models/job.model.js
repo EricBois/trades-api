@@ -68,7 +68,7 @@ const jobSchema = new mongoose.Schema({
     type: String
   }],
   team: [{
-    id: String, // ID
+    uid: String, // ID
     name: String,
   }],
   skills: [{
