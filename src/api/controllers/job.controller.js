@@ -177,14 +177,11 @@ exports.edit = async (req, res, next) => {
   if (req.file) {
     req.body.file = req.file.location;
   }
-  if (req.body.team) {
+  if (req.body.team) { // add the uid to the allowed list
     const list = []
-    for (const key in req.body.team) {
-      const user = req.body.team[key]
-      user.id = key
-      console.log(user.uid)
-      list.push(user.uid)
-    }
+    req.body.team.forEach((obj, i) => {
+      list.push(obj.uid)
+    })
     list.push(req.user.sub)
     req.body.allowed = list
   }
