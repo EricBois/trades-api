@@ -126,7 +126,12 @@ exports.getPublicAccount = async (req, res, next) => {
       const user = users[key]
       user._id = key
       if (user.user_metadata.available) {
-        sorted.push({name: user.name, uid: user.user_id})
+        sorted.push({
+          name: user.name,
+          uid: user.user_id,
+          picture: user.picture,
+          metadata: user.user_metadata
+        })
       }
     }
     return res.json(sorted)

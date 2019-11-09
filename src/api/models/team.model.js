@@ -10,6 +10,8 @@ const teamSchema = new mongoose.Schema({
   team: [{
     uid: String, // ID
     name: String,
+    picture: String,
+    metadata: Object
   }],
 });
 
