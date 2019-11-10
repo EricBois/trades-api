@@ -51,6 +51,10 @@ router
   .get(checkJwt, controller.getFromUser);
 
 router
+  .route('/get/private')
+  .get(checkJwt, controller.getAllowed);
+
+router
   .route('/view/:id')
   .get(checkJwt, controller.getOne);
 

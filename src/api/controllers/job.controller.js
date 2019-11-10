@@ -136,7 +136,9 @@ exports.getOne = async (req, res, next) => {
       bids: job.bids,
       files: job.files,
       photos: job.photos,
-      email: job.email
+      phone: job.phone,
+      email: job.email,
+      private: job.private
     });
   } catch (e) {
     return next(e);
@@ -173,10 +175,24 @@ exports.getFromUser = async (req, res, next) => {
   }
 };
 
+exports.getAllowed = async (req, res, next) => {
+  try {
+    const jobsPromise = Job.find({ allowed: req.user.sub }).sort({ Created: -1 });
+    const [jobs] = await Promise.all([jobsPromise]);
+    res.json(jobs);
+  } catch (e) {
+    next(e);
+  }
+};
+
 exports.edit = async (req, res, next) => {
   if (req.file) {
     req.body.file = req.file.location;
   }
+  if (req.body.phone !== '' && req.body.phone !== null && req.body.phone !== undefined) {
+    req.body.phone = formatPhoneNumber(req.body.phone);
+  }
+  req.body.allowed = [req.user.sub]
   if (req.body.team) { // add the uid to the allowed list
     const list = []
     req.body.team.forEach((obj, i) => {
