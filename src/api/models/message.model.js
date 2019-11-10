@@ -7,11 +7,6 @@ const messageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  project: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Job',
-    required: 'You must supply a job_id!',
-  },
   project_name: String,
   from: {
     type: String,

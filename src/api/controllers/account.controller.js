@@ -182,7 +182,8 @@ exports.getProfileBid = async (req, res, next) => {
       name: user.name,
       picture: user.picture,
       metadata: user.user_metadata,
-      photos: photos
+      photos: photos,
+      uid: user.user_id
     });
   } catch (e) {
     return next(e);
