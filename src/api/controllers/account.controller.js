@@ -160,7 +160,7 @@ exports.uploadPhotos = async (req, res, next) => {
   try {
     const photos = await Photos.findOneAndUpdate({ user: req.user.sub },
       { $push: { photos: req.file.location } },
-      { safe: true, upsert: true, new: true });
+      { safe: true, upsert: true, new: true, runValidators: true });
     
     if (!photos) {
       req.body.user = req.user.sub

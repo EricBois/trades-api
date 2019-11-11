@@ -17,6 +17,7 @@ const jobSchema = new mongoose.Schema({
   name: {
     type: String,
     trim: true,
+    maxlength: 40,
     required: 'Must have a name!',
   },
   jobType: {
@@ -30,6 +31,7 @@ const jobSchema = new mongoose.Schema({
   description: {
     type: String,
     trim: true,
+    maxlength: 400,
   },
   location: {
     type: {
