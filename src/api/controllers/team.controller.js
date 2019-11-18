@@ -4,7 +4,8 @@ exports.get = async (req, res, next) => {
   try {
     const team = await Team.findOne({ user: req.user.sub });
     if (!team) {
-      await (new Team({ user: req.user.sub })).save();
+      const newTeam = await (new Team({ user: req.user.sub })).save();
+      return res.json(newTeam);
     }
     res.json(team);
   } catch (e) {
