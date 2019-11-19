@@ -120,7 +120,7 @@ exports.getAccount = async (req, res, next) => {
 exports.getPublicAccount = async (req, res, next) => {
   try {
     const sorted = []
-    const userPromise = await auth0.getUsers({search_engine: 'v3', q: 'user_metadata.available:true'});
+    const userPromise = await auth0.getUsers({search_engine: 'v3', q: 'user_metadata.available:true', sort: 'last_logint:-1'});
     const [users] = await Promise.all([userPromise]);
     for (const key in users) {
       const user = users[key]
