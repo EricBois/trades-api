@@ -42,7 +42,7 @@ router
   .route('/get')
   .get(checkJwt, controller.get);
 
-router
+router // My Team jobs
   .route('/private')
   .get(checkJwt, controller.getPrivate);
 
@@ -50,7 +50,7 @@ router
   .route('/get/user')
   .get(checkJwt, controller.getFromUser);
 
-router
+router // My Private jobs 
   .route('/get/private')
   .get(checkJwt, controller.getAllowed);
 
