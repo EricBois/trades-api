@@ -86,6 +86,10 @@ const jobSchema = new mongoose.Schema({
     max: 10,
     default: 0,
   },
+  bidding: {
+    type: Boolean,
+    default: true
+  },
   files: [{
     type: String,
     trim: true,

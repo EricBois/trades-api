@@ -138,7 +138,8 @@ exports.getOne = async (req, res, next) => {
       photos: job.photos,
       phone: job.phone,
       email: job.email,
-      private: job.private
+      private: job.private,
+      bidding: job.bidding
     });
   } catch (e) {
     return next(e);
