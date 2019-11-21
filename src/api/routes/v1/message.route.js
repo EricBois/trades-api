@@ -43,6 +43,10 @@ router
   .get(checkJwt, controller.read);
 
 router
+  .route('/notified/:id')
+  .get(checkJwt, controller.notified);
+
+router
   .route('/get')
   .get(checkJwt, controller.get);
 

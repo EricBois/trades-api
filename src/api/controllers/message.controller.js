@@ -1,25 +1,4 @@
 const Message = require('../models/message.model');
-// Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
-// Set the region 
-AWS.config.update({region: 'us-east-1'});
-
-const Email = async (to, from, text) => {
-  // Create the promise and SES service object
-  var sendPromise = new AWS.SES({apiVersion: '2010-12-01'}).sendTemplatedEmail({
-    Destination: { /* required */
-      ToAddresses: [
-        to,
-      ]
-    },
-    Source: from, /* required */
-    Template: 'TEMPLATE_NAME', /* required */
-    TemplateData: '{ \"REPLACEMENT_TAG_NAME\":\"REPLACEMENT_VALUE\" }', /* required */
-    ReplyToAddresses: [
-      'EMAIL_ADDRESS'
-    ]
-  }).promise();
-}
 
 exports.create = async (req, res, next) => {
   try {
@@ -27,7 +6,7 @@ exports.create = async (req, res, next) => {
       const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
         { from : req.user.sub }] },
         { 
-          $set: {read: [req.user.sub], delete: []},
+          $set: {read: [req.user.sub], delete: [], notified: []},
           $push: { messages: req.body.message } 
         },
         { new: true });
@@ -46,6 +25,15 @@ exports.create = async (req, res, next) => {
 exports.read = async (req, res, next) => {
   const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
     { from : req.user.sub }] }, { $push: { read: req.user.sub } }, {
+    new: true, // return the new store instead of the old one
+    runValidators: true,
+  }).exec();
+  res.json(message)
+}
+
+exports.notified = async (req, res, next) => {
+  const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
+    { from : req.user.sub }] }, { $push: { notified: req.user.sub } }, {
     new: true, // return the new store instead of the old one
     runValidators: true,
   }).exec();
