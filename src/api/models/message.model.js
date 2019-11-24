@@ -23,6 +23,7 @@ const messageSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
+      uid: String,
       name: String,
       text: {
         type: String,
