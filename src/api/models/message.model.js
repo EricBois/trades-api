@@ -31,9 +31,6 @@ const messageSchema = new mongoose.Schema({
       }
     }
   ],
-  notified: [{
-    type: String
-  }],
   read: [{
     type: String
   }]

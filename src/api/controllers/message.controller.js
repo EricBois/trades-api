@@ -1,4 +1,6 @@
 const Message = require('../models/message.model');
+const Notification = require('../models/notification.model');
+const Notify = require('../controllers/notification.controller');
 
 exports.create = async (req, res, next) => {
   try {
@@ -10,11 +12,17 @@ exports.create = async (req, res, next) => {
           $push: { messages: req.body.message } 
         },
         { new: true });
+      // get the right user to send notification to
+      const user = (message.to === req.user.sub) ? message.from : message.to
+      await (new Notification({ senderId: req.user.sub, recipientId: user, activity: 'Message', activityDesc: 'You have a new message!' })).save();
+      Notify.Message(user, 'You have a new message')
       return res.json(message);
     } else {
       req.body.from = req.user.sub;
       req.body.read = [req.user.sub];
       const message = await (new Message(req.body)).save();
+      await (new Notification({ senderId: req.user.sub, recipientId: message.to, activity: 'Message', activityDesc: 'You have a new message!' })).save();
+      Notify.Message(message.to, 'You have a new message')
       return res.json(message)
     }
   } catch (e) {
@@ -25,15 +33,6 @@ exports.create = async (req, res, next) => {
 exports.read = async (req, res, next) => {
   const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
     { from : req.user.sub }] }, { $push: { read: req.user.sub } }, {
-    new: true, // return the new store instead of the old one
-    runValidators: true,
-  }).exec();
-  res.json(message)
-}
-
-exports.notified = async (req, res, next) => {
-  const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
-    { from : req.user.sub }] }, { $push: { notified: req.user.sub } }, {
     new: true, // return the new store instead of the old one
     runValidators: true,
   }).exec();
