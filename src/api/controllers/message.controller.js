@@ -8,7 +8,7 @@ exports.create = async (req, res, next) => {
       const message = await Message.findOneAndUpdate({ _id: req.params.id, $or: [{ to : req.user.sub },
         { from : req.user.sub }] },
         { 
-          $set: {read: [req.user.sub], delete: [], notified: []},
+          $set: {read: [req.user.sub], delete: []},
           $push: { messages: req.body.message } 
         },
         { new: true });
