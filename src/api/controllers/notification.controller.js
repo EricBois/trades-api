@@ -1,4 +1,5 @@
 // const Notify = require('../models/notification.model');
+const Notification = require('../models/notification.model');
 var OneSignal = require('onesignal-node');      
       
 var myClient = new OneSignal.Client({      
@@ -6,8 +7,8 @@ var myClient = new OneSignal.Client({
     app: { appAuthKey: process.env.onesignalAuthKey, appId: process.env.onesignalAppID }      
 });
 
-
-exports.Message = async (user, text, next) => {
+// create push notification
+const messagePush = async (user, text) => {
   try {
     const messageNotification = await new OneSignal.Notification({      
       contents: {      
@@ -18,6 +19,16 @@ exports.Message = async (user, text, next) => {
     await myClient.sendNotification(messageNotification);      
 
   } catch(e) {
-    next(e)
+    throw new Error(e)
+  }
+}
+
+// create notification
+exports.create = async (fromUser, toUser, activity, activityDesc) => {
+  try {
+    await (new Notification({ senderId: fromUser, recipientId: toUser, activity: activity, activityDesc: activityDesc })).save();
+    await messagePush(toUser, activityDesc);
+  } catch(e) {
+    throw new Error(e)
   }
 }
