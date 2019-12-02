@@ -16,7 +16,13 @@ const messagePush = async (user, text) => {
       } 
     });
     messageNotification.postBody["include_external_user_ids"] = [user];
-    await myClient.sendNotification(messageNotification);      
+    await myClient.sendNotification(messageNotification, (err, httpResponse,data) => {      
+      if (err) {      
+        throw new Error(err)      
+      } else {      
+          console.log(data, httpResponse.statusCode);      
+      }      
+   });
 
   } catch(e) {
     throw new Error(e)
