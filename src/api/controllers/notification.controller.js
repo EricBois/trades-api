@@ -1,6 +1,14 @@
 // const Notify = require('../models/notification.model');
 const Notification = require('../models/notification.model');
-var OneSignal = require('onesignal-node');      
+var OneSignal = require('onesignal-node');
+var ManagementClient = require('auth0').ManagementClient;
+
+var auth0 = new ManagementClient({
+  domain: 'dev-2upadx1s.auth0.com',
+  clientId: `${process.env.AUTH0_MANAGEMENT_ID}`,
+  clientSecret: `${process.env.AUTH0_MANAGEMENT_SECRET}`,
+  scope: 'read:users update:users'
+});
       
 var myClient = new OneSignal.Client({      
     userAuthKey: process.env.onesignalAuthKey,      
@@ -16,13 +24,7 @@ const messagePush = async (user, text) => {
       } 
     });
     messageNotification.postBody["include_external_user_ids"] = [user];
-    await myClient.sendNotification(messageNotification, (err, httpResponse,data) => {      
-      if (err) {      
-        throw new Error(err)      
-      } else {      
-          console.log(data, httpResponse.statusCode);      
-      }      
-   });
+    await myClient.sendNotification(messageNotification);
 
   } catch(e) {
     throw new Error(e)
@@ -33,8 +35,36 @@ const messagePush = async (user, text) => {
 exports.create = async (fromUser, toUser, activity, activityDesc) => {
   try {
     await (new Notification({ senderId: fromUser, recipientId: toUser, activity: activity, activityDesc: activityDesc })).save();
+    // const user = await auth0.getUser({ id: toUser });
+    // if (user.user_metadata.emailNotification) {
+    //   // Send Email
+    // }
+    // if (user.user_metadata.smsNotification) {
+    //   // Send Sms
+    // }
+    // Send push notification
     await messagePush(toUser, activityDesc);
   } catch(e) {
-    throw new Error(e)
+    throw new Error(e);
+  }
+}
+
+exports.get = async (req, res, next) => {
+  try {
+    const notificationPromise = await Notification.find({ recipientId: req.user.sub }).sort({ Created: -1 });
+    const [notifications] = await Promise.all([notificationPromise]);
+    res.json(notifications);
+  } catch(e) {
+    next(e);
+  }
+}
+
+exports.delete = async (req, res, next) => {
+  try {
+    const notifications = await Notification.deleteMany({ recipientId: req.user.sub });
+    const response =  (notifications) ? res.status(200).end() : res.status(404).end()
+    return response
+  } catch(e) {
+    next(e);
   }
 }

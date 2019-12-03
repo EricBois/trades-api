@@ -13,7 +13,7 @@ exports.create = async (req, res, next) => {
         { new: true });
       // get the right user to send notification to
       const user = (message.to === req.user.sub) ? message.from : message.to
-      // await (new Notification({ senderId: req.user.sub, recipientId: user, activity: 'Message', activityDesc: 'You have a new message!' })).save();
+      // Create notification
       await Notify.create(req.user.sub, user, 'Message', 'You have a new message')
       return res.json(message);
     } else {

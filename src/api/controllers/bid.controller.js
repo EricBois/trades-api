@@ -1,4 +1,5 @@
 const Bid = require('../models/bid.model');
+const Notify = require('../controllers/notification.controller');
 
 function formatPhoneNumber(phoneNumberString) {
   const cleaned = (`${phoneNumberString}`).replace(/\D/g, '');
@@ -51,13 +52,15 @@ exports.email = async (req, res, next) => {
 exports.meeting = (req, res, next) => {
   try {
     req.body.bid.forEach(async bid =>  {
-      const check = await Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, req.body.meeting, {
+      const project = await Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, req.body.meeting, {
           new: true, // return the new store instead of the old one
           runValidators: true,
         }).exec();
-        if (!check) return next()
-        
-        res.json(check)
+        if (!project) return next()
+        // send the notification to the right person
+        const user = (project.host === req.user.sub) ? project.user : project.host 
+        await Notify.create(req.user.sub, user, 'Meeting', 'New activity in the meeting section!')
+        res.json(project)
     })
   } catch (e) {
     return next(e)
