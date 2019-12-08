@@ -29,7 +29,7 @@ exports.read = async (req, res, next) => {
     new: true, // return the new store instead of the old one
     runValidators: true,
   }).exec();
-  await Notification.deleteMany({ link: req.params.id});
+  await Notification.deleteMany({ link: req.params.id, recipientId: req.user.sub});
   res.json(message)
 }
 
