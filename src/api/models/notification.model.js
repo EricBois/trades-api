@@ -11,6 +11,7 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     required: "You need a recipient ID"
   },
+  link: String, // id of notification ( message / meeting  )
   senderId: {
     type: String,
     required: "You need a sender ID"
