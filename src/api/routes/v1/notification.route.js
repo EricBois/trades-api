@@ -31,6 +31,10 @@ router
   .get(checkJwt, controller.get);
 
 router
+  .route('/create')
+  .post(checkJwt, controller.create);
+
+router
   .route('/delete')
   .delete(checkJwt, controller.delete);
 

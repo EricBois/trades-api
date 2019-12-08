@@ -1,4 +1,5 @@
 const Message = require('../models/message.model');
+const Notification = require('../models/notification.model');
 
 exports.create = async (req, res, next) => {
   try {
@@ -28,6 +29,7 @@ exports.read = async (req, res, next) => {
     new: true, // return the new store instead of the old one
     runValidators: true,
   }).exec();
+  await Notification.deleteMany({ link: req.params.id});
   res.json(message)
 }
 

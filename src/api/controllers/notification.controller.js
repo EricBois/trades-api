@@ -34,7 +34,14 @@ const messagePush = async (user, text) => {
 // create notification
 exports.create = async (req, res, next) => {
   try {
-    const notification = await (new Notification({ senderId: fromUser, recipientId: toUser, activity: activity, activityDesc: activityDesc, link: link })).save();
+    const notification = await (new Notification(
+      {
+        senderId: req.body.senderId,
+        recipientId: req.body.recipientId,
+        activity: req.body.activity,
+        activityDesc: req.body.activityDesc,
+        link: req.body.link
+      })).save();
     // const user = await auth0.getUser({ id: toUser });
     // if (user.user_metadata.emailNotification) {
     //   // Send Email
@@ -43,7 +50,7 @@ exports.create = async (req, res, next) => {
     //   // Send Sms
     // }
     // Send push notification
-    await messagePush(toUser, activityDesc);
+    await messagePush(req.body.recipientId, req.body.activityDesc);
     res.json(notification)
   } catch(e) {
     next(e);
