@@ -1,5 +1,4 @@
 const Bid = require('../models/bid.model');
-const Notify = require('../controllers/notification.controller');
 
 function formatPhoneNumber(phoneNumberString) {
   const cleaned = (`${phoneNumberString}`).replace(/\D/g, '');
@@ -57,9 +56,6 @@ exports.meeting = (req, res, next) => {
           runValidators: true,
         }).exec();
         if (!project) return next()
-        // send the notification to the right person
-        const user = (project.host === req.user.sub) ? project.user : project.host 
-        await Notify.create(req.user.sub, user, 'Meeting', 'New activity in the meeting section!')
         res.json(project)
     })
   } catch (e) {
