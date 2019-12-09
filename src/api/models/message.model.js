@@ -8,6 +8,10 @@ const messageSchema = new mongoose.Schema({
     default: Date.now,
   },
   project_name: String,
+  names: {
+    to: String,
+    from: String
+  },
   from: {
     type: String,
     required: 'Must have user UID!',
