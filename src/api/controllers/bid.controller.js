@@ -44,6 +44,19 @@ exports.delete = async (req, res, next) => {
   }
 };
 
+exports.notified = async (req, res, next) => {
+  try {
+    const project = await Bid.findOneAndUpdate({  _id: req.body.bid.id, user: req.body.bid.user}, {notified: true}, {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+    }).exec();
+    if (!project) return next()
+    res.json(project)
+  } catch(e) {
+    next(e)
+  }
+}
+
 exports.meeting = (req, res, next) => {
   try {
     req.body.bid.forEach(async bid =>  {

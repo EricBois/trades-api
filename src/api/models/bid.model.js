@@ -7,6 +7,10 @@ const bidSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  notified: {
+    type: Boolean,
+    default: false
+  },
   confirm: {
     status: {
       type: Boolean,
