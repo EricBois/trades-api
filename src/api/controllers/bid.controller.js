@@ -44,10 +44,6 @@ exports.delete = async (req, res, next) => {
   }
 };
 
-exports.email = async (req, res, next) => {
-  res.json(req.body)
-};
-
 exports.meeting = (req, res, next) => {
   try {
     req.body.bid.forEach(async bid =>  {

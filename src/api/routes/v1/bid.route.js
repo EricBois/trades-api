@@ -54,8 +54,4 @@ router
   .route('/getMeetings')
   .get(checkJwt, controller.getMeetings);
 
-router
-  .route('/email')
-  .post(checkJwt, controller.email);
-
 module.exports = router;
