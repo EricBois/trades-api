@@ -11,6 +11,10 @@ const bidSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  meetingRequested: {
+    type: Boolean,
+    default: false
+  },
   confirm: {
     status: {
       type: Boolean,
