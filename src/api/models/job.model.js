@@ -72,6 +72,10 @@ const jobSchema = new mongoose.Schema({
   team: [{
     uid: String, // ID
     name: String,
+    notified: {
+      type: Boolean,
+      default: false
+    }
   }],
   skills: [{
     type: String,
