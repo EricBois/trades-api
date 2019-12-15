@@ -76,3 +76,13 @@ exports.delete = async (req, res, next) => {
     next(e);
   }
 }
+
+exports.deleteBulk = async (req, res, next) => {
+  try {
+    const notifications = await Notification.deleteMany({ recipientId: req.user.sub, link: req.body.links });
+    const response =  (notifications) ? res.status(200).end() : res.status(404).end()
+    return response
+  } catch(e) {
+    next(e);
+  }
+}

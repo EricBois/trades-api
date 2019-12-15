@@ -38,4 +38,8 @@ router
   .route('/delete')
   .delete(checkJwt, controller.delete);
 
+router
+  .route('/bulk')
+  .post(checkJwt, controller.deleteBulk);
+
 module.exports = router;

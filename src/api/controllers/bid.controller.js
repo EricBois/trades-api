@@ -69,14 +69,12 @@ exports.notified = async (req, res, next) => {
 exports.meeting = (req, res, next) => {
   try {
     req.body.bid.forEach(async bid =>  {
-      if (!bid.meetingRequested) {
-        const project = await Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, req.body.meeting, {
-          new: true, // return the new store instead of the old one
-          runValidators: true,
-        }).exec();
-        if (!project) return next()
-        res.json(project)
-      }
+      const project = await Bid.findOneAndUpdate({  _id: bid.id, user: bid.user}, req.body.meeting, {
+        new: true, // return the new store instead of the old one
+        runValidators: true,
+      }).exec();
+      if (!project) return next()
+      res.json(project)
     })
   } catch (e) {
     return next(e)
