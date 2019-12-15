@@ -2,6 +2,13 @@
 const Notification = require('../models/notification.model');
 var OneSignal = require('onesignal-node');
 var ManagementClient = require('auth0').ManagementClient;
+var twilio = require('twilio');
+
+var accountSid = process.env.TWILLIO_SID; // Your Account SID from www.twilio.com/console
+var authToken = process.env.TWILLIO_TOKEN;   // Your Auth Token from www.twilio.com/console
+
+var twilio = require('twilio');
+var client = new twilio(accountSid, authToken);
 
 var auth0 = new ManagementClient({
   domain: 'dev-2upadx1s.auth0.com',
@@ -42,13 +49,17 @@ exports.create = async (req, res, next) => {
         activityDesc: req.body.activityDesc,
         link: req.body.link
       })).save();
-    // const user = await auth0.getUser({ id: toUser });
+    const user = await auth0.getUser({ id: req.body.recipientId });
     // if (user.user_metadata.emailNotification) {
     //   // Send Email
     // }
-    // if (user.user_metadata.smsNotification) {
-    //   // Send Sms
-    // }
+    if (user.user_metadata.smsNotification) {
+      client.messages.create({
+        body: req.body.activityDesc,
+        to: user.user_metadata.phone,  // Text this number
+        from: '+15873276684' // From a valid Twilio number
+      })
+    }
     // Send push notification
     await messagePush(req.body.recipientId, req.body.activityDesc);
     res.json(notification)
