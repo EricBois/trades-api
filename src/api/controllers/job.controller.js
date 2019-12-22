@@ -148,7 +148,7 @@ exports.getOne = async (req, res, next) => {
 
 exports.get = async (req, res, next) => {
   try {
-    const jobsPromise = Job.find({ private: false }).sort({ Created: -1 });
+    const jobsPromise = Job.find({ private: false, bidding: true }).sort({ Created: -1 });
     const [jobs] = await Promise.all([jobsPromise]);
     res.json(jobs);
   } catch (e) {
