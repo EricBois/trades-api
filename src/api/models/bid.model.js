@@ -66,7 +66,7 @@ const bidSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  price: Number,
+  price: String,
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
