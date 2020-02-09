@@ -263,7 +263,8 @@ exports.createAccount = async (req, res, next) => {
       connection: 'Username-Password-Authentication',
       name: req.body.name,
       user_metadata: {
-        phone: req.body.user_metadata.phone
+        phone: req.body.user_metadata.phone,
+        invitedBy: code.user
       },
       email: req.body.email,
       password: req.body.password
