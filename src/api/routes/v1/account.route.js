@@ -54,4 +54,24 @@ router
   .route('/uploadPhoto')
   .post(checkJwt, controller.upload, controller.uploadPhotos);
 
+router
+  .route('/gencode')
+  .post(checkJwt, controller.createCode);
+
+router
+  .route('/usedCode')
+  .post(checkJwt, controller.usedCode);
+
+router
+  .route('/codes')
+  .get(checkJwt, controller.getCodes);
+
+router
+  .route('/create')
+  .post(controller.createAccount);
+
+router
+  .route('/verifyCode')
+  .post(controller.verifyCode);
+
 module.exports = router;

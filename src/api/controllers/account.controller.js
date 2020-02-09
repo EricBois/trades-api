@@ -2,13 +2,14 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
 const Photos = require('../models/photos.model');
+const Code = require('../models/code.model');
 var ManagementClient = require('auth0').ManagementClient;
 
 var auth0 = new ManagementClient({
   domain: 'dev-2upadx1s.auth0.com',
   clientId: `${process.env.AUTH0_MANAGEMENT_ID}`,
   clientSecret: `${process.env.AUTH0_MANAGEMENT_SECRET}`,
-  scope: 'read:users update:users'
+  scope: 'read:users update:users create:users'
 });
 
 
@@ -185,5 +186,98 @@ exports.getProfileBid = async (req, res, next) => {
     });
   } catch (e) {
     return next(e);
+  }
+};
+
+// code generator
+const generateRandomCode = (() => {
+  const USABLE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789".split("");
+
+  return length => {
+    return new Array(length).fill(null).map(() => {
+      return USABLE_CHARACTERS[Math.floor(Math.random() * USABLE_CHARACTERS.length)];
+    }).join("");
+  }
+})();
+
+exports.createCode = async (req, res, next) => {
+  try {
+    const user = await auth0.getUser({ id: req.user.sub });
+    // if no app metadata or no admin flag deny access
+    if (!user.app_metadata || !user.app_metadata.admin) return next()
+    const gencode = generateRandomCode(10)
+    const code = await (new Code({user: req.body.name, userUid: req.user.sub, code: gencode})).save();
+    if (!code) return next()
+    res.json(code)
+  } catch (e) {
+    next(e)
+  }
+}
+
+exports.verifyCode = async (req, res, next) => {
+  try {
+    const code = await Code.findOne({ code: req.body.code });
+    if (!code) return next()
+    res.json(code)
+  } catch(e) {
+    next(e)
+  }
+}
+
+exports.usedCode = async (req, res, next) => {
+  try {
+    const user = await auth0.getUser({ id: req.user.sub });
+    // if no app metadata or no admin flag deny access
+    if (!user.app_metadata || !user.app_metadata.admin) return next()
+    const code = await Code.findOneAndUpdate({ code: req.body.code }, { used: true }, {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+    }).exec();
+    res.json(code)
+  } catch(e) {
+    next(e)
+  }
+}
+
+//get codes
+exports.getCodes = async (req, res, next) => {
+  try {
+    const user = await auth0.getUser({ id: req.user.sub });
+    // if no app metadata or no admin flag deny access
+    if (!user.app_metadata || !user.app_metadata.admin) return next()
+    const codesPromise = Code.find().sort({ created: -1 });
+    const [codes] = await Promise.all([codesPromise]);
+    res.json(codes);
+  } catch (e) {
+    next(e);
+  }
+};
+
+// Create account if code is OK
+exports.createAccount = async (req, res, next) => {
+  try {
+    const code = await Code.findOne({ code: req.body.code });
+    if (!code) return next()
+    await auth0.createUser({
+      verify_email: true,
+      connection: 'Username-Password-Authentication',
+      name: req.body.name,
+      user_metadata: {
+        phone: req.body.user_metadata.phone
+      },
+      email: req.body.email,
+      password: req.body.password
+    }, async function (err, user) {
+      if (err) {
+        res.json(err);
+      } else {
+        await Code.deleteOne({ code: req.body.code });
+      
+        res.json('User Created')
+      }
+      
+    })
+  } catch (e) {
+    return next(e)
   }
 };
