@@ -74,4 +74,8 @@ router
   .route('/verifyCode')
   .post(controller.verifyCode);
 
+router
+  .route('/inquire')
+  .post(controller.inquire);
+
 module.exports = router;

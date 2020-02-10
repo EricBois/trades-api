@@ -3,7 +3,11 @@ const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
 const Photos = require('../models/photos.model');
 const Code = require('../models/code.model');
+
 var ManagementClient = require('auth0').ManagementClient;
+
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 var auth0 = new ManagementClient({
   domain: 'dev-2upadx1s.auth0.com',
@@ -205,7 +209,7 @@ exports.createCode = async (req, res, next) => {
     const user = await auth0.getUser({ id: req.user.sub });
     // if no app metadata or no admin flag deny access
     if (!user.app_metadata || !user.app_metadata.admin) return next()
-    const gencode = generateRandomCode(10)
+    const gencode = generateRandomCode(5)
     const code = await (new Code({user: req.body.name, userUid: req.user.sub, code: gencode})).save();
     if (!code) return next()
     res.json(code)
@@ -282,3 +286,19 @@ exports.createAccount = async (req, res, next) => {
     return next(e)
   }
 };
+
+exports.inquire = async (req, res, next) => {
+  try {
+    const inquiries = {
+      to: 'burn4live@gmail.com',
+      from: 'support@sub-hub.ca',
+      subject: 'Account Application form',
+      text: `Name: ${req.body.name}, Email: ${req.body.email}, Phone: ${req.body.phone}, Employment: ${req.body.status}, Experience: ${req.body.experience}, Skills: ${req.body.skills}, References: ${req.body.references}`,
+      html: `Name: ${req.body.name}<br> Email: ${req.body.email}<br> Phone: ${req.body.phone}<br> Employment: ${req.body.status}<br> Experience: ${req.body.experience}<br> Skills: ${req.body.skills}<br> References: ${req.body.references}`,
+    };
+    sgMail.send(inquiries);
+    res.json('Application Sent!')
+  } catch(e) {
+    next(e)
+  }
+}
