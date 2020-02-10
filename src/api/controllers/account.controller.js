@@ -233,7 +233,7 @@ exports.usedCode = async (req, res, next) => {
     const user = await auth0.getUser({ id: req.user.sub });
     // if no app metadata or no admin flag deny access
     if (!user.app_metadata || !user.app_metadata.admin) return next()
-    const code = await Code.findOneAndUpdate({ code: req.body.code }, { used: true }, {
+    const code = await Code.findOneAndUpdate({ code: req.body.code }, { used: true, note: req.body.note }, {
       new: true, // return the new store instead of the old one
       runValidators: true,
     }).exec();

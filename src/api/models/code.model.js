@@ -22,7 +22,8 @@ const codeSchema = new mongoose.Schema({
   used: {
     type: Boolean,
     default: false
-  }
+  },
+  note: String
 });
 
 module.exports = mongoose.model('Code', codeSchema);
