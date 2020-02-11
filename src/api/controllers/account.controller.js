@@ -257,6 +257,18 @@ exports.getCodes = async (req, res, next) => {
   }
 };
 
+exports.delCode = async (req, res, next) => {
+  try {
+    const user = await auth0.getUser({ id: req.user.sub });
+    // if no app metadata or no admin flag deny access
+    if (!user.app_metadata || !user.app_metadata.admin) return next()
+    await Code.deleteOne({ code: req.body.code });
+    res.json('Done')
+  } catch (e) {
+    next(e);
+  }
+};
+
 // Create account if code is OK
 exports.createAccount = async (req, res, next) => {
   try {

@@ -67,6 +67,10 @@ router
   .get(checkJwt, controller.getCodes);
 
 router
+  .route('/delCode')
+  .post(checkJwt, controller.delCode);
+
+router
   .route('/create')
   .post(controller.createAccount);
 
