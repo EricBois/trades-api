@@ -148,7 +148,7 @@ exports.getOne = async (req, res, next) => {
 
 exports.get = async (req, res, next) => {
   try {
-    const jobsPromise = Job.find({ private: false, bidding: true }).sort({ Created: -1 });
+    const jobsPromise = Job.find({ private: false }).sort({ Created: -1 });
     const [jobs] = await Promise.all([jobsPromise]);
     res.json(jobs);
   } catch (e) {
@@ -180,7 +180,7 @@ exports.getFromUser = async (req, res, next) => {
 // Get private jobs owned and invited
 exports.getAllowed = async (req, res, next) => {
   try {
-    const jobsPromise = Job.find({ allowed: req.user.sub, private: true, bidding: true }).sort({ Created: -1 });
+    const jobsPromise = Job.find({ allowed: req.user.sub, private: true }).sort({ Created: -1 });
     const [jobs] = await Promise.all([jobsPromise]);
     res.json(jobs);
   } catch (e) {
