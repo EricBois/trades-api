@@ -233,7 +233,7 @@ exports.usedCode = async (req, res, next) => {
     const user = await auth0.getUser({ id: req.user.sub });
     // if no app metadata or no admin flag deny access
     if (!user.app_metadata || !user.app_metadata.admin) return next()
-    const code = await Code.findOneAndUpdate({ code: req.body.code }, { used: true, note: req.body.note }, {
+    const code = await Code.findOneAndUpdate({ code: req.body.code }, { used: true, note: req.body.note, userType: req.body.userType }, {
       new: true, // return the new store instead of the old one
       runValidators: true,
     }).exec();
@@ -274,6 +274,7 @@ exports.createAccount = async (req, res, next) => {
   try {
     const code = await Code.findOne({ code: req.body.code });
     if (!code) return next()
+    const userType = code.userType
     await auth0.createUser({
       verify_email: true,
       connection: 'Username-Password-Authentication',
@@ -281,6 +282,9 @@ exports.createAccount = async (req, res, next) => {
       user_metadata: {
         phone: req.body.user_metadata.phone,
         invitedBy: code.user
+      },
+      app_metadata: {
+        user: userType
       },
       email: req.body.email,
       password: req.body.password

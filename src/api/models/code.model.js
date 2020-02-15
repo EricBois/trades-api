@@ -23,6 +23,10 @@ const codeSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  userType: {
+    type: String,
+    default: 'User'
+  },
   note: String
 });
 
