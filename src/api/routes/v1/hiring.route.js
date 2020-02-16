@@ -47,6 +47,10 @@ router
   .post(checkJwt, controller.edit);
 
 router
+  .route('/status/:id')
+  .post(checkJwt, controller.hired);
+
+router
   .route('/delete/:id')
   .post(checkJwt, controller.delete);
 

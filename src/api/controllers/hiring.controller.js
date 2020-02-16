@@ -24,6 +24,7 @@ exports.get = async (req, res, next) => {
 
 exports.edit = async (req, res, next) => {
   try {
+    req.body.user = req.user.sub;
     const job = await Hiring.findOneAndUpdate({ _id: req.params.id, user: req.user.sub }, req.body, {
       new: true, // return the new store instead of the old one
       runValidators: true,
@@ -33,6 +34,26 @@ exports.edit = async (req, res, next) => {
     next(e);
   }
 };
+
+exports.hired = async (req, res, next) => {
+  try {
+    if (req.body.status) {
+      const job = await Hiring.findOneAndUpdate({ _id: req.params.id },
+        { $push: { hired: req.user.sub },
+          $pull: { notHired: req.user.sub }},
+        { new: true, runValidators: true, upsert: true }).exec();
+      return res.json(job)
+    } else if (!req.body.status) {
+        const job = await Hiring.findOneAndUpdate({ _id: req.params.id },
+          { $push: { notHired: req.user.sub },
+            $pull : { hired: req.user.sub } },
+          { new: true, runValidators: true, upsert: true }).exec();
+        return res.json(job)    
+    }
+  } catch(e) {
+    next(e)
+  }
+}
 
 exports.delete = async (req, res, next) => {
   try {
