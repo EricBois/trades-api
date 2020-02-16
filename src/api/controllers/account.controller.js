@@ -305,6 +305,10 @@ exports.createAccount = async (req, res, next) => {
 
 exports.inquire = async (req, res, next) => {
   try {
+    const user = await auth0.getUsers({search_engine: 'v3', q: `email:${req.body.email}`, sort: 'last_logint:-1'});
+    if (user.length > 0) {
+      return res.status(409).send({ error: "Email already used", code: 409 });
+    }
     const inquiries = {
       to: 'burn4live@gmail.com',
       from: 'support@sub-hub.ca',
