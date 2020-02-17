@@ -81,7 +81,19 @@ exports.saveProfile = async (req, res, next) => {
       new: true, // return the new store instead of the old one
       runValidators: true,
     }).exec();
+    res.json(profile)
   } catch (e) {
     next(e);
   }
 };
+
+// get contractors looking for work (lfw)
+exports.getContractors = async (req, res, next) => {
+  try {
+    const lfwPromise = Employ.find({ available: true }).sort({ created: -1 });
+    const [lfw] = await Promise.all([lfwPromise]);
+    res.json(lfw);
+  } catch(e) {
+    next(e)
+  }
+}

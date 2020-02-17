@@ -21,6 +21,9 @@ const employSchema = new mongoose.Schema({
   },
   experience: String,
   reference: String,
+  employment: [{
+    type: String
+  }],
   skills: [{
     type: String,
   }],

@@ -62,5 +62,8 @@ router
   .route('/getProfile')
   .get(checkJwt, controller.getProfile);
 
+router
+  .route('/getContractors')
+  .get(checkJwt, controller.getContractors);
 
 module.exports = router;
