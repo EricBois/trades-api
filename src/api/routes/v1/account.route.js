@@ -32,7 +32,7 @@ router
 
 router
   .route('/public')
-  .get(checkJwt, controller.getPublicAccount);
+  .post(checkJwt, controller.getAccounts);
 
 router
   .route('/edit')

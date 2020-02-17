@@ -122,10 +122,13 @@ exports.getAccount = async (req, res, next) => {
   }
 };
 
-exports.getPublicAccount = async (req, res, next) => {
+exports.getAccounts = async (req, res, next) => {
   try {
     const sorted = []
-    const userPromise = await auth0.getUsers({search_engine: 'v3', q: 'user_metadata.available:true', sort: 'last_logint:-1'});
+    if (!req.body.name || req.body.name === '') {
+      req.body.name = '*'
+    }
+    const userPromise = await auth0.getUsers({search_engine: 'v3', q: `name:${req.body.name}`, sort: 'last_logint:-1'});
     const [users] = await Promise.all([userPromise]);
     for (const key in users) {
       const user = users[key]
