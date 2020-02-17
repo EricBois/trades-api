@@ -54,5 +54,13 @@ router
   .route('/delete/:id')
   .post(checkJwt, controller.delete);
 
+router
+  .route('/profile')
+  .post(checkJwt, controller.saveProfile);
+
+router
+  .route('/getProfile')
+  .get(checkJwt, controller.getProfile);
+
 
 module.exports = router;

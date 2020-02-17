@@ -1,4 +1,5 @@
 const Hiring = require('../models/hiring.model');
+const Employ = require('../models/employ.model');
 
 // create job
 exports.create = async (req, res, next) => {
@@ -59,6 +60,27 @@ exports.delete = async (req, res, next) => {
   try {
     await Hiring.deleteOne({ _id: req.params.id, user: req.user.sub });
     res.json('Successfully Removed job');
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.getProfile = async (req, res, next) => {
+  const profile = await Employ.findOne({ user: req.user.sub });
+  if (!profile) {
+    const profile = await (new Employ({user: req.user.sub, name: 'Undefined', available: false})).save();
+    res.json(profile);
+  }
+  res.json(profile);
+}
+
+exports.saveProfile = async (req, res, next) => {
+  try {
+    req.body.user = req.user.sub;
+    const profile = await Employ.findOneAndUpdate({user: req.user.sub }, req.body, {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+    }).exec();
   } catch (e) {
     next(e);
   }
