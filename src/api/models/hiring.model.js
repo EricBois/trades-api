@@ -22,7 +22,6 @@ const hiringSchema = new mongoose.Schema({
   tickets: [{
     type: String,
   }],
-  profile: Object,
   hired: [{
     type: String
   }],
