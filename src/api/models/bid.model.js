@@ -52,21 +52,26 @@ const bidSchema = new mongoose.Schema({
   },
   contractor: String, // project creator name
   createdBy: String, // bidder
-  trade: [{
-    type: String,
-    default: 'Whole Project',
+  items: [{
+    trade: {
+      type: String,
+      default: 'Whole Project',
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    price: {
+      type: String,
+      default: '0'
+    }
   }],
   phone: String,
   email: String,
   user: { // Bid Creator
     type: String,
     required: 'Must have user UID!',
-  },
-  description: {
-    type: String,
-    trim: true,
-  },
-  price: String,
+  }
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
