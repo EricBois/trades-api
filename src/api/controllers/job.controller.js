@@ -195,7 +195,6 @@ exports.edit = async (req, res, next) => {
   if (req.body.phone !== '' && req.body.phone !== null && req.body.phone !== undefined) {
     req.body.phone = formatPhoneNumber(req.body.phone);
   }
-  req.body.allowed = [req.user.sub]
   if (req.body.team) { // add the uid to the allowed list
     const list = []
     req.body.team.forEach((obj, i) => {
