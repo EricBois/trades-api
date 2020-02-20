@@ -15,7 +15,7 @@ exports.create = async (req, res, next) => {
 // get all jobs
 exports.get = async (req, res, next) => {
   try {
-    const jobsPromise = Hiring.find().sort({ Created: -1 });
+    const jobsPromise = Hiring.find().sort({ created: -1 });
     const [jobs] = await Promise.all([jobsPromise]);
     res.json(jobs);
   } catch (e) {

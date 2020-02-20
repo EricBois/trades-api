@@ -66,6 +66,7 @@ const bidSchema = new mongoose.Schema({
       default: '0'
     }
   }],
+  notes: String,
   phone: String,
   email: String,
   user: { // Bid Creator
