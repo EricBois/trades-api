@@ -36,7 +36,7 @@ const router = express.Router();
 
 router
   .route('/create')
-  .post(checkJwt, controller.create);
+  .post(checkJwt, controller.upload, controller.create);
 
 router
   .route('/get/:id')
@@ -57,5 +57,14 @@ router
 router
   .route('/notified')
   .post(checkJwt, controller.notified);
+
+router
+  .route('/upload/:id')
+  .post(checkJwt, controller.upload, controller.uploadFile);
+
+router
+  .route('/deleteFile/:name/:id/:type')
+  .post(checkJwt, controller.deleteFile);
+
 
 module.exports = router;

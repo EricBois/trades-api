@@ -1,4 +1,7 @@
 const Bid = require('../models/bid.model');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const aws = require('aws-sdk');
 
 function formatPhoneNumber(phoneNumberString) {
   const cleaned = (`${phoneNumberString}`).replace(/\D/g, '');
@@ -9,6 +12,88 @@ function formatPhoneNumber(phoneNumberString) {
   }
   return null;
 }
+
+aws.config.update({
+  secretAccessKey: process.env.AWS_KEY,
+  accessKeyId: process.env.AWS_KEYID,
+  region: 'us-east-1', // region of your bucket
+});
+
+const s3 = new aws.S3();
+
+const multerOptions = {
+  storage: multerS3({
+    s3,
+    bucket: 'subhub01',
+    acl: 'public-read',
+    metadata(req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key(req, file, cb) {
+      const name = `${`${req.user.sub}/${req.params.id}/${file.originalname}`}`;
+      cb(null, name);
+    },
+  }),
+  fileFilter(req, file, next) {
+    const isFile = file.mimetype.startsWith('application/pdf');
+    if (isFile) {
+      next(null, true);
+    } else {
+      next({ message: "That filetype isn't allowed!" }, false);
+    }
+  },
+};
+
+const singleUpload = multer(multerOptions).single('file');
+
+exports.upload = async (req, res, next) => {
+  await singleUpload(req, res, (err) => {
+    if (err) {
+      return res.status(422).send({
+        errors: [{ title: 'Upload Error', detail: err.message }],
+      });
+    }
+    return next();
+  });
+};
+
+exports.uploadFile = async (req, res, next) => {
+  try {
+    const job = await Bid.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
+      { $push: { files: req.file.location } },
+      { safe: true, upsert: true, new: true });
+    res.json(job);
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.deleteFile = async (req, res, next) => {
+  const params = {
+    Bucket: 'subhub01',
+    Delete: { // required
+      Objects: [ // required
+        {
+          Key: (`${`${req.user.sub}/${req.params.id}/${req.params.name}`}`), // required
+        },
+      ],
+    },
+  };
+  await s3.deleteObjects(params, (err) => {
+    if (err) next(err, err.stack); // an error occurred
+  });
+  if (req.params.type === 'file') {
+    try {
+      const job = await Bid.findByIdAndUpdate({ _id: req.params.id, user: req.user.sub },
+        { $pull: { files: req.body.file } },
+        { safe: true, upsert: true, new: true });
+      return res.json(job);
+    } catch (e) {
+      return next(e);
+    }
+  }
+  
+};
 
 exports.create = async (req, res, next) => {
   try {

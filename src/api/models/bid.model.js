@@ -72,7 +72,11 @@ const bidSchema = new mongoose.Schema({
   user: { // Bid Creator
     type: String,
     required: 'Must have user UID!',
-  }
+  },
+  files: [{
+    type: String,
+    trim: true,
+  }]
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
