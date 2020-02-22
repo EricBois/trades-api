@@ -40,7 +40,8 @@ const bidSchema = new mongoose.Schema({
       type: String,
     }],
     host: String, // Project Creator uid
-    description: String
+    description: String,
+    time: String
   },
   address: String,
   addressUrl: String,
