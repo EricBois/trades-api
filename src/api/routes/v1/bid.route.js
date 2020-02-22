@@ -55,6 +55,10 @@ router
   .get(checkJwt, controller.getMeetings);
 
 router
+  .route('/delMeeting')
+  .post(checkJwt, controller.delMeeting);
+
+router
   .route('/notified')
   .post(checkJwt, controller.notified);
 

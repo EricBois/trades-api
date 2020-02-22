@@ -151,6 +151,30 @@ exports.notified = async (req, res, next) => {
   }
 }
 
+exports.delMeeting = async (req, res, next) => {
+  const meeting = await Bid.findOneAndUpdate({  _id: req.body.id, host: req.user.sub}, 
+    { $set: { 
+      meeting: {dates: [], host: '', description: ''},
+      request: false,
+      meetingRequested: false,
+      host: '',
+      confirm: {
+        status: false,
+        date: '',
+        description: ''
+      },
+      change: {
+        status: false,
+        uid: ''
+      }
+    }}, {
+    new: true,
+    runValidators: true,
+  }).exec();
+  if (!meeting) return next()
+  res.json(meeting)
+};
+
 exports.meeting = (req, res, next) => {
   try {
     req.body.bid.forEach(async bid =>  {
