@@ -36,6 +36,47 @@ exports.edit = async (req, res, next) => {
   }
 };
 
+exports.apply = async (req, res, next) => {
+  try {
+    const job = await Hiring.findOneAndUpdate({ _id: req.params.id },
+      {
+        $push: { applicants: {
+          uid: req.user.sub,
+          name: req.body.name,
+          experience: req.body.experience,
+          references: req.body.references,
+          wage: req.body.wage,
+          skills: req.body.skills,
+          tickets: req.body.tickets
+        }
+          
+        }
+      }, {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+    }).exec();
+    res.json(job);
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.withdraw = async (req, res, next) => {
+  try {
+    const job = await Hiring.findOneAndUpdate({ _id: req.params.id },
+      {
+        $pull: { applicants: {uid: req.user.sub}
+        }
+      }, {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+    }).exec();
+    res.json(job);
+  } catch (e) {
+    next(e);
+  }
+};
+
 exports.hired = async (req, res, next) => {
   try {
     if (req.body.status) {

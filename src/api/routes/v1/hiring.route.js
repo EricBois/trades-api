@@ -66,4 +66,12 @@ router
   .route('/getContractors')
   .get(checkJwt, controller.getContractors);
 
+router
+  .route('/apply/:id')
+  .post(checkJwt, controller.apply);
+
+router
+  .route('/withdraw/:id')
+  .post(checkJwt, controller.withdraw);
+
 module.exports = router;
