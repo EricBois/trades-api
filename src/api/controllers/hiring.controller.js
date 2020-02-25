@@ -65,7 +65,7 @@ exports.withdraw = async (req, res, next) => {
   try {
     const job = await Hiring.findOneAndUpdate({ _id: req.params.id },
       {
-        $pull: { applicants: {uid: req.user.sub}
+        $pull: { applicants: { uid: req.user.sub }
         }
       }, {
       new: true, // return the new store instead of the old one
