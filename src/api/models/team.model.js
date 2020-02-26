@@ -11,6 +11,14 @@ const teamSchema = new mongoose.Schema({
     uid: String, // ID
     name: String,
     picture: String,
+    notes: String,
+    featured: {
+      type: Boolean,
+      default: false
+    },
+    tags: [{
+      type: String
+    }],
     metadata: Object
   }],
 });
