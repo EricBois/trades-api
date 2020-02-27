@@ -33,7 +33,11 @@ const hiringSchema = new mongoose.Schema({
     }],
     tickets: [{
       type: String
-    }]
+    }],
+    contact: {
+      phone: String,
+      email: String
+    }
   }],
   skills: [{
     type: String,

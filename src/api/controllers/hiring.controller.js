@@ -47,7 +47,8 @@ exports.apply = async (req, res, next) => {
           references: req.body.references,
           wage: req.body.wage,
           skills: req.body.skills,
-          tickets: req.body.tickets
+          tickets: req.body.tickets,
+          contact: req.body.contact
         }
           
         }
