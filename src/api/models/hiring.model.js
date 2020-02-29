@@ -50,7 +50,36 @@ const hiringSchema = new mongoose.Schema({
   }],
   notHired: [{
     type: String
-  }]
+  }],
+  location: {
+    type: {
+      type: String,
+      default: 'Point',
+    },
+    lat: {
+      type: Number,
+      default: 0,
+    },
+    lng: {
+      type: Number,
+      default: 0,
+    },
+    address: {
+      type: String,
+    },
+    country: {
+      type: String
+    },
+    city: {
+      type: String
+    },
+    province: {
+      type: String
+    },
+    url: {
+      type: String
+    }
+  }
 
 });
 
