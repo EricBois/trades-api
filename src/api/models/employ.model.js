@@ -33,7 +33,11 @@ const employSchema = new mongoose.Schema({
   location: [{
     type: String
   }],
-  hourly: String
+  hourly: String,
+  contact: {
+    phone: String,
+    email: String
+  }
 
 });
 
