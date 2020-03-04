@@ -5,7 +5,8 @@ const bidRoutes = require('./bid.route');
 const messageRoutes = require('./message.route');
 const teamRoutes = require('./team.route');
 const hiringRoutes = require('./hiring.route');
-notificationRoutes = require('./notification.route');
+const notificationRoutes = require('./notification.route');
+const reviewRoutes = require('./review.route');
 
 const router = express.Router();
 
@@ -32,6 +33,8 @@ router.use('/team', teamRoutes);
 router.use('/notification', notificationRoutes);
 
 router.use('/hiring', hiringRoutes);
+
+router.use('/review', reviewRoutes);
 
 
 module.exports = router;

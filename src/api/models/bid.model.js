@@ -7,6 +7,10 @@ const bidSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  reviewed: {
+    type: Boolean,
+    default: false
+  },
   notified: {
     type: Boolean,
     default: false
@@ -30,7 +34,6 @@ const bidSchema = new mongoose.Schema({
     },
     uid: String
   },
-  host: String, // project Creator
   request: {
     type: Boolean,
     default: false
