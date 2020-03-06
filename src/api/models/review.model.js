@@ -41,6 +41,7 @@ const reviewSchema = new mongoose.Schema({
   },
   description: String,
   reviewerName: String,
+  projectName: String,
   reviewerUid: String,
 
 });
