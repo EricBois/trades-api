@@ -18,11 +18,16 @@ exports.create = async (req, res, next) => {
 
 exports.edit = async (req, res, next) => {
   try {
-    const review = await Review.findOneAndUpdate({ _id: req.params.id}, req.body, {
+    const review = await Review.findOneAndUpdate({ bid: req.params.id}, req.body, {
       new: true, // return the new store instead of the old one
       runValidators: true,
     }).exec();
-    res.json(review)
+    if (!review) return next()
+    const bid = await Bid.findOneAndUpdate({ _id: req.body.bid}, {reviewed: true}, {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+    }).exec();
+    return res.json(bid)
   } catch (e) {
     next(e)
   }

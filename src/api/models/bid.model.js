@@ -86,4 +86,19 @@ const bidSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
+bidSchema.virtual('review', {
+  ref: 'Review', // what model to link?
+  localField: '_id', // which field on the job?
+  foreignField: 'bid', // which field on the item?
+});
+
+function autopopulate(next) {
+  this.populate('review');
+  next();
+}
+
+
+bidSchema.pre('find', autopopulate);
+bidSchema.pre('findOne', autopopulate);
+
 module.exports = mongoose.model('Bid', bidSchema);
