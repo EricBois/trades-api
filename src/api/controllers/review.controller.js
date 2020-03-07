@@ -27,7 +27,7 @@ exports.edit = async (req, res, next) => {
       new: true, // return the new store instead of the old one
       runValidators: true,
     }).exec();
-    return res.json(bid)
+    return res.json({bid, review})
   } catch (e) {
     next(e)
   }
@@ -44,6 +44,15 @@ exports.get = async (req, res, next) => {
 };
 
 exports.delete = async (req, res, next) => {
-    const review = await Review.deleteOne({ _id: req.params.id, reviewerUid: req.params.reviewer})
-  res.json(review)
+  try {
+    const review = await Review.deleteOne({ bid: req.params.id, reviewerUid: req.params.reviewer})
+    if (!review) return next()
+    await Bid.findOneAndUpdate({ _id: req.params.id}, {reviewed: false}, {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+    }).exec();
+    res.json(review)
+  } catch (e) {
+    next(e)
+  }
 };
