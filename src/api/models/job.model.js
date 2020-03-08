@@ -104,7 +104,6 @@ const jobSchema = new mongoose.Schema({
   }],
   phone: String,
   email: String,
-  oneBid: false,
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
