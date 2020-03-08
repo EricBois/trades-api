@@ -20,23 +20,28 @@ const reviewSchema = new mongoose.Schema({
     required: 'Must have user UID!',
   },
   ratingA: {
-    type: String,
+    type: Number,
+    default: 1,
     required: 'Enter rating'
   },
   ratingB: {
-    type: String,
+    type: Number,
+    default: 1,
     required: 'Enter rating'
   },
   ratingC: {
-    type: String,
+    type: Number,
+    default: 1,
     required: 'Enter rating'
   },
   ratingD: {
-    type: String,
+    type: Number,
+    default: 1,
     required: 'Enter rating'
   },
   ratingE: {
-    type: String,
+    type: Number,
+    default: 1,
     required: 'Enter rating'
   },
   description: String,
