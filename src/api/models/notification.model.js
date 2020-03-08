@@ -18,7 +18,7 @@ const notificationSchema = new mongoose.Schema({
   },
   activity: {
     type: String,
-    enum: ['Message', 'Meeting', 'Bid', 'bidRequest', 'Project'],
+    enum: ['Message', 'Meeting', 'Bid', 'bidRequest', 'Project', 'Review'],
     required: "You need an activity"
   },
   activityDesc: {
