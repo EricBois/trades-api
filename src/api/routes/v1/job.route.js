@@ -42,18 +42,6 @@ router
   .route('/get')
   .get(checkJwt, controller.get);
 
-router // My Team jobs
-  .route('/private')
-  .get(checkJwt, controller.getPrivate);
-
-router
-  .route('/get/user')
-  .get(checkJwt, controller.getFromUser);
-
-router // My Private jobs 
-  .route('/get/private')
-  .get(checkJwt, controller.getAllowed);
-
 router
   .route('/view/:id')
   .get(checkJwt, controller.getOne);
