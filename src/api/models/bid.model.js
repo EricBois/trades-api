@@ -38,6 +38,7 @@ const bidSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  host: String,
   meeting: {
     dates: [{
       type: String,
