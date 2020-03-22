@@ -42,4 +42,8 @@ router
   .route('/get/:user')
   .get(checkJwt, controller.get);
 
+router
+  .route('/comment/:id')
+  .post(checkJwt, controller.comment);
+
 module.exports = router;

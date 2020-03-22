@@ -33,6 +33,20 @@ exports.edit = async (req, res, next) => {
   }
 }
 
+exports.comment = async (req, res, next) => {
+  try {
+    const review = await Review.findOneAndUpdate({ bid: req.params.id}, { comment: req.body.comment }, {
+      new: true, // return the new store instead of the old one
+      runValidators: true,
+    }).exec();
+    if (!review) return next()
+    
+    return res.json(review)
+  } catch (e) {
+    next(e)
+  }
+}
+
 exports.get = async (req, res, next) => {
   try {
     const reviewsPromise = await Review.find({ user: req.params.user }).sort({ Created: -1 });
