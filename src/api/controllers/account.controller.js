@@ -115,6 +115,7 @@ exports.deletePhoto = async (req, res, next) => {
 exports.getAccount = async (req, res, next) => {
   try {
     const user = await auth0.getUser({ id: req.user.sub });
+    if (!user) return next(e)
     const photos = await Photos.findOne({user: req.user.sub});
     return res.json({user, photos})
   } catch (e) {
